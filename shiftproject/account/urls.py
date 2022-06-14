@@ -4,7 +4,7 @@ from django.contrib.auth.views import LoginView,LogoutView
 from .views import SignupView
 from . import views
 
-app_name='accounts'
+app_name='account'
 
 urlpatterns=[
         path('',views.index_view,name='index'),
