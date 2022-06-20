@@ -50,7 +50,7 @@ def add_event(request):
     )
     event.save()
 
-    # 空を返却
+    # editを返却
     return HttpResponse("edit")
 
 def authorize(request):
