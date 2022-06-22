@@ -39,6 +39,23 @@ document.addEventListener('DOMContentLoaded', function () {
                     });
             }
         },
+        events: function (info, successCallback, failureCallback) {
+
+            axios
+                .post("/shift/list/", {
+                    start_date: info.start.valueOf(),
+                    end_date: info.end.valueOf(),
+                })
+                .then((response) => {
+                    calendar.removeAllEvents();
+                    successCallback(response.data);
+                })
+                .catch(() => {
+                    // バリデーションエラーなど
+                    alert("登録に失敗しました");
+                });
+        },
+
     });
 
     calendar.render();

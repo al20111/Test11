@@ -1,5 +1,6 @@
-<html>
-
+{% extends 'base.html' %}
+{% block h1 %}シフト編集画面{% endblock %}
+{% block content %}
 <head>
     <meta charset='utf-8' />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
@@ -14,4 +15,4 @@
     <script src="{% static 'shift/app.js' %}"></script>
 </body>
 
-</html>
+{% endblock %}
