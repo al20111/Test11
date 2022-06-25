@@ -3,6 +3,6 @@
 {% block h1 %}意見箱{% endblock %}
 {% block content %}
 {% for item in object_list %}
-{{item.text}}
+<p>{{item.text}}</p>
 {% endfor %}
 {% endblock content %}

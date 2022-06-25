@@ -1,4 +1,10 @@
 .form-opinion{
+    font-size: 200%;
     width: 30em;
-    height: 30em;
+}
+
+.form-board{
+    height: 10em;
+    font-size: 200%;
+    background-color:aquamarine;  
 }

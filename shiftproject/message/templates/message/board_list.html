@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}意見箱・掲示板{% endblock %}
-{% block h1 %}掲示板・掲示板{% endblock %}
+{% block h1 %}掲示板{% endblock %}
 {% block content %}
 {% for item in object_list %}
 {% if request.user.is_staff %}
