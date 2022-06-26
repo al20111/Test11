@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}メニュー{% endblock %}
+{% block h1 %}メニュー{% endblock %}
+{% block content %}
+    <div>
+        {% if request.user.is_staff %}
+        <a href="{% url 'shift:authorize' %}">シフト承認</a>
+        {% else %}
+        <a href="{% url 'shift:edit' %}">シフト編集</a>
+        <a href="{% url 'shift:confirm' %}">シフト確認</a>
+        {% endif %}
+        <a href="{% url 'message:send' %}">メッセージ送信</a>
+        <a href="{% url 'message:opinion' %}">意見箱・掲示板</a>
+        
+    </div>
+{% endblock content %}
