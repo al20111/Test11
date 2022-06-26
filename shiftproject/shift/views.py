@@ -1,6 +1,5 @@
 import json
-from .models import Event
-from .forms import EventForm
+from .models import ShiftData
 from django.http import Http404
 import time
 from django.shortcuts import render
@@ -8,7 +7,7 @@ from django.template import loader
 from django.http import HttpResponse
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from .forms import CalendarForm
+from .forms import CalendarForm,ShiftForm
 
 def edit(request):
     """
@@ -17,10 +16,10 @@ def edit(request):
     get_token(request)
     template = loader.get_template('shift/edit.html')
     return HttpResponse(template.render())
-
-def add_event(request):
+    
+def add_shift(request):
     """
-    イベント登録
+    シフト登録
     """
 
     if request.method == "GET":
@@ -31,32 +30,39 @@ def add_event(request):
     datas = json.loads(request.body)
 
     # バリデーション
-    eventForm = EventForm(datas)
-    if eventForm.is_valid() == False:
+    shiftForm = ShiftForm(datas)
+    if shiftForm.is_valid() == False:
         # バリデーションエラー
         raise Http404()
 
     # リクエストの取得
-    start_date = datas["start_date"]
-    end_date = datas["end_date"]
-    event_name = datas["event_name"]
+    Date = datas["date"]
+ #   start_time = datas["start_time"]
+ #   end_time = datas["end_time"]
+    Time = datas["time"]
 
     # 日付に変換。JavaScriptのタイムスタンプはミリ秒なので秒に変換
-    formatted_start_date = time.strftime(
-        "%Y-%m-%d", time.localtime(start_date / 1000))
-    formatted_end_date = time.strftime(
-        "%Y-%m-%d", time.localtime(end_date / 1000))
+    formatted_date = time.strftime(
+        "%Y-%m-%d", time.localtime(Date / 1000))
+
+    splitedTime = Time.split('-')
+    start_time = int(splitedTime[0])
+    end_time = int(splitedTime[1])
 
     # 登録処理
-    event = Event(
-        event_name=str(event_name),
-        start_date=formatted_start_date,
-        end_date=formatted_end_date,
+    shift = ShiftData(
+        user_id = 000000,
+        date = formatted_date,
+        start_time = start_time,
+        end_time = end_time,
+        confirmed_flag=0,
     )
-    event.save()
+    shift.save()
 
     # 空を返却
     return HttpResponse("edit")
+
+
 
 def authorize(request):
     return render(
@@ -72,7 +78,7 @@ def confirm(request):
         {'somedata':100}
     )
 
-def get_events(request):
+def get_shift(request):
     """
     イベントの取得
     """
@@ -93,7 +99,6 @@ def get_events(request):
     # リクエストの取得
     start_date = datas["start_date"]
     end_date = datas["end_date"]
-
     # 日付に変換。JavaScriptのタイムスタンプはミリ秒なので秒に変換
     formatted_start_date = time.strftime(
         "%Y-%m-%d", time.localtime(start_date / 1000))
@@ -101,18 +106,24 @@ def get_events(request):
         "%Y-%m-%d", time.localtime(end_date / 1000))
 
     # FullCalendarの表示範囲のみ表示
-    events = Event.objects.filter(
-        start_date__lt=formatted_end_date, end_date__gt=formatted_start_date
+    shifts = ShiftData.objects.filter(
+        date__lt=formatted_end_date, date__gt=formatted_start_date
     )
 
     # fullcalendarのため配列で返却
     list = []
-    for event in events:
+    for shift in shifts:
+        if(shift.start_time%100==0) : start_min = "00"
+        else : start_min = str(shift.start_time%100)
+        if(shift.end_time%100==0) : end_min = "00"
+        else : end_min = str(shift.end_time % 100)
+        Time = str(shift.start_time//100) + ":" + start_min +"-"+ str(shift.end_time//100) + ":" + end_min
         list.append(
             {
-                "title": event.event_name,
-                "start": event.start_date,
-                "end": event.end_date,
+                
+                "title": Time,
+                "start": shift.date,
+                "end": shift.date,
             }
         )
 
