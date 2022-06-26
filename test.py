@@ -44,5 +44,5 @@ def EditShift(request, id, date, start, end):
 def PostShift(request, id, date, start, end):
     tempshiftrs = tempShifts.objects.all().values()
     for x in tempshifts:
-        ChangeShift(request, x[id], x[date], x[start], x[end])
+        ChangeShift(request, x[_id], x[date], x[start], x[end])
     return 1
