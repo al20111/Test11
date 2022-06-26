@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 
 {% block title %}送信先選択{% endblock %}
-{% block h1 %}メッセージ送信{% endblock %}
+{% block h1 %}送信先選択{% endblock %}
 {% block content %}
-{% for dest in dest_list %}
-    <p>{{dest.name}}未読数{{unread_list[dest_list.index(dest)]}}</p>
+{% for id,name,unread in dest_list %}
+    <p><a href="/message/history/{{user_id}}/{{id}}/">{{name}}</a>未読数{{unread}}</p>
 {% endfor %}
 {% endblock content %}
