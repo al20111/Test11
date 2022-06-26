@@ -7,6 +7,6 @@ urlpatterns=[
     path('edit/',views.edit,name='edit'),
     path('authorize/',views.authorize,name='authorize'),
     path('confirm/',views.confirm,name='confirm'),
-    path('add/',views.add_event,name="add_event"),
-    path("list/", views.get_events, name="get_events"),
+    path('addShift/',views.add_shift,name='add_shift'),
+    path('listShift/',views.get_shift,name='get_shift'),
 ]
