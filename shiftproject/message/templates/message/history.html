@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}メッセージ送信{% endblock %}
+{% block h1 %}メッセージ送信{% endblock %}
+{% block content %}
+<a href="select_destination/">送信先選択</a>
+{% for message in messages %}
+    {% if message.indivisual_ID == user_id %}
+        <p style="text-align:right">{{message.indivisual_ID}}</p>
+        <p style="text-align:right">{{message.message}}</p>
+        <!-- css適用するとき用？ -->
+        <!-- 自分の吹き出し -->
+        <!--div class="message__right"-->
+            <!--figure>
+            <img src="icon.png" />
+            </figure>
+            <div class="message__right">
+            <div class="name">{{message.indivisual_ID}}</div>
+            <div class="text">{{message.message}}</div-->
+            {% if message.read_status == 1 %}
+                <p style="text-align:right" class="date">既読<br>{{message.send_time}}</p>
+            {% else %}
+                <p style="text-align:right" class="date">{{message.send_time}}</p>
+            {% endif %}
+        <!--/div-->
+    {% else %}
+        <p>{{message.indivisual_ID}}</p>
+        <p>{{message.message}}</p>
+        <p>{{message.send_time}}</p>
+        <!-- css適用するとき用？ -->
+        <!-- 相手の吹き出し -->
+        <!--div class="message__left">
+            <figure>
+            <img src="icon.png" />
+            </figure>
+            <div class="message__left-text">
+            <div class="name">{{message.indivisual_ID}}</div>
+            <div class="text">{{message.message}}</div>
+            <span class="date">{{message.send_time}}</span>
+        </div-->
+    {% endif %}
+{% endfor %}
+<form method="post">
+    {% csrf_token %}
+
+    {{ form.as_table }}
+    <button type="submit">送信</button>
+    </form>
+{% endblock content %}
