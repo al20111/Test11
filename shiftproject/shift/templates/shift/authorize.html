@@ -3,6 +3,17 @@
 {% block title %}シフト認証{% endblock %}
 {% block h1 %}シフト認証{% endblock %}
 {% block content %}
-authorize
-{% endblock content %}
+<head>
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
+</head>
 
+<body>
+    <div id='calendar'></div>
+
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+    <script src="{% static 'shift/app_authorize.js' %}"></script>
+</body>
+{% endblock content %}

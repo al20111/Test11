@@ -9,4 +9,5 @@ urlpatterns=[
     path('confirm/',views.confirm,name='confirm'),
     path('addShift/',views.add_shift,name='add_shift'),
     path('listShift/',views.get_shift,name='get_shift'),
+     path('confirmShift/',views.confirmShift,name='confirm_shift'),
 ]
