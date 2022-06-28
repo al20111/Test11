@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.contrib.auth.models import User
+from .models import User
 from django.urls import reverse_lazy
 from django.views.generic import CreateView
 
@@ -10,8 +10,8 @@ class SignupView(CreateView):
     model=User
     form_class=SignupForm
     template_name='account/signup.html'
-    success_url=reverse_lazy('account:index')
-
+    success_url=reverse_lazy('message:store-info')
+    
 def index_view(request):
     return render(request,'account/index.html',{'somedata':100})
 
