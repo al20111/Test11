@@ -7,8 +7,9 @@ from django.template import loader
 from django.http import HttpResponse
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from .forms import CalendarForm,ShiftForm
+from .forms import CalendarForm,ShiftForm,ConfirmForm
 
+#シフト編集
 def edit(request):
     """
     カレンダー画面
@@ -62,22 +63,6 @@ def add_shift(request):
     # 空を返却
     return HttpResponse("edit")
 
-
-
-def authorize(request):
-    return render(
-        request,
-        'shift/authorize.html',
-        {'somedata':100},
-    )
-
-def confirm(request):
-    return render(
-        request,
-        'shift/confirm.html',
-        {'somedata':100}
-    )
-
 def get_shift(request):
     """
     イベントの取得
@@ -107,7 +92,7 @@ def get_shift(request):
 
     # FullCalendarの表示範囲のみ表示
     shifts = ShiftData.objects.filter(
-        date__lt=formatted_end_date, date__gt=formatted_start_date
+        date__lt=formatted_end_date, date__gt=formatted_start_date , user_id= 0,
     )
 
     # fullcalendarのため配列で返却
@@ -129,6 +114,63 @@ def get_shift(request):
 
     return JsonResponse(list, safe=False)
 
+#シフト承認
+def authorize(request):
+    """
+    カレンダー画面
+    """
+    get_token(request)
+    template = loader.get_template('shift/authorize.html')
+    return HttpResponse(template.render())
+    
+   # return render(
+    #    request,
+     #   'shift/authorize.html',
+      #  {'somedata':100},
+   # )
+
+
+#シフト閲覧
+def confirm(request):
+    """
+    カレンダー画面
+    """
+    get_token(request)
+    template = loader.get_template('shift/confirm.html')
+    return HttpResponse(template.render())
+    
+    #return render(
+    #    request,
+    #    'shift/confirm.html',
+    #    {'somedata':100}
+    #)
+
+def confirmShift(request):
+    if request.method == "GET":
+        # GETは対応しない
+        raise Http404()
+    
+    # JSONの解析
+    datas = json.loads(request.body)
+
+    # バリデーション
+    confirmForm = ConfirmForm(datas)
+    if confirmForm.is_valid() == False:
+        # バリデーションエラー
+        raise Http404()
+    
+    # リクエストの取得
+    Date = datas["date"]
+
+     # 日付に変換。JavaScriptのタイムスタンプはミリ秒なので秒に変換
+    formatted_date = time.strftime(
+        "%Y-%m-%d", time.localtime(Date / 1000))
+    
+    confirmShift = ShiftData.objects.filter(
+        user_id = 00000, date = formatted_date, 
+    )
+
+    return JsonResponse(confirmShift, safe=False)
 
 
 

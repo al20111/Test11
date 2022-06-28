@@ -9,3 +9,6 @@ class ShiftForm(forms.Form):
 
     date = forms.IntegerField(required=True)
     time = forms.CharField(required=True, max_length=10)
+
+class ConfirmForm(forms.Form):
+    date = forms.IntegerField(required=True)
