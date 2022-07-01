@@ -121,7 +121,10 @@ def authorize(request):
     """
     get_token(request)
     template = loader.get_template('shift/authorize.html')
-    return HttpResponse(template.render())
+    context = {
+        'form': DateForm()
+    }
+    return HttpResponse(template.render(context, request))
 
    # return render(
     #    request,
@@ -129,6 +132,21 @@ def authorize(request):
       #  {'somedata':100},
    # )
 
+def authorize_detail(request):
+    template = loader.get_template('shift/authorize_detail.html')
+    d = request.POST.get('date_field')
+    shift_list = ShiftData.objects.filter(date=d, confirmed_flag=0)
+    context = {
+        'shift_list': shift_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+def flag_shift(request, id):
+    template = loader.get_template('account/index.html')
+    shift = ShiftData.objects.get(id=id)
+    shift.confirmed_flag=1
+    shift.save()
+    return HttpResponse(template.render({}, request))
 
 #シフト閲覧
 def confirm(request):
@@ -171,25 +189,3 @@ def confirmShift(request):
     )
 
     return JsonResponse(confirmShift, safe=False)
-
-def authorize(request):
-    context = {
-        'form': DateForm()
-    }
-    return render(request, 'shift/authorize.html', context)
-
-def authorize_detail(request):
-    template = loader.get_template('shift/authorize_detail.html')
-    d = request.POST.get('date_field')
-    shift_list = ShiftData.objects.filter(date=d, confirmed_flag=0)
-    context = {
-        'shift_list': shift_list,
-    }
-    return HttpResponse(template.render(context, request))
-
-def flag_shift(request, id):
-    template = loader.get_template('shift/authorize_detail.html')
-    shift = ShiftData.objects.get(id=id)
-    shift.confirmed_flag=1
-    shift.save()
-    return HttpResponse(template.render({}, request))
