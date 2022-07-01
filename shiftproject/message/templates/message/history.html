@@ -2,13 +2,15 @@
 {% block title %}メッセージ送信{% endblock %}
 {% block h1 %}メッセージ送信{% endblock %}
 {% block content %}
-<a href="select_destination/">送信先選択</a>
+<!--head>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head-->
 {% if messages %}
     {% for message in messages %}
         {% if message.indivisual_ID == user_id %}
             <p style="text-align:right">{{message.indivisual_ID}}</p>
             <p style="text-align:right">{{message.message}}</p>
-            <!-- css適用するとき用？ -->
+            <!-- css適用するとき用 -->
             <!-- 自分の吹き出し -->
             <!--div class="message__right"-->
                 <!--figure>

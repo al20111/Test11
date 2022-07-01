@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}意見送信|意見箱{% endblock %}
+{% block h1 %}意見送信{% endblock %}
+{% block content %}
+    <form method='POST'>{% csrf_token %}
+        {{form.text|add_class:'form-opinion'}}
+        <input type='submit' Value='送信'>
+    </form>
+{% endblock content %}

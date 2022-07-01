@@ -1,11 +1,25 @@
 from django.db import models
+from django.conf import settings
 from django.db.models import Q
 from sympy import true
-
 # Create your models here.
+class Staff(models.Model):
+    user=models.OneToOneField('account.User',verbose_name='スタッフ',on_delete=models.CASCADE)
+    store=models.ForeignKey('Store',verbose_name='店舗',on_delete=models.CASCADE)
+    
+
+    def __str__(self):
+        return f'{self.store}:{self.user}'
+class Store(models.Model):
+    name=models.CharField('店舗',max_length=20)
+    wage=models.IntegerField('時給')
+    
+    def __str__(self):
+        return self.name
+
 class Message(models.Model):
-    indivisual_ID = models.PositiveIntegerField()
-    dest_ID = models.PositiveIntegerField()
+    indivisual_ID = models.CharField(max_length=20)
+    dest_ID = models.CharField(max_length=20)
     message = models.CharField(max_length=2000)
     read_status = models.PositiveIntegerField()
     send_time = models.DateTimeField(auto_now_add=true)
@@ -27,7 +41,14 @@ class Message(models.Model):
 
     def GetMessageHistory(self,indivisual_ID,dest_ID):
         success_flag = 1
-        # Message.objects.
+        # 相手から送られたメッセージに既読をつける
+        dest_message = Message.objects.filter(
+            Q(indivisual_ID = dest_ID, dest_ID = indivisual_ID)
+        )
+        for message in dest_message:
+            message.read_status = 1
+            message.save(force_update=true)
+        
         message_history = Message.objects.filter(
             Q(indivisual_ID = indivisual_ID,dest_ID = dest_ID) 
             | Q(indivisual_ID = dest_ID, dest_ID = indivisual_ID)
@@ -49,39 +70,10 @@ class Message(models.Model):
         return success_flag,message_history
 
 class Board(models.Model):
-    shop_ID = models.PositiveIntegerField()
-    board_message = models.CharField(max_length=5000)
-    update_time = models.DateTimeField(auto_now=true)
-
-    def GetBoardInfo(self,shop_ID):
-        success_flag = 1
-        board_info = Board.objects.filter(shop_ID=shop_ID)
-        return success_flag,board_info
-    
-    def UpdateBoard(self,shop_ID,text):
-        success_flag = 1
-        new_board_info = Board(
-            shop_ID = shop_ID,
-            board_message = text
-        )
-        new_board_info.save(force_update=true)
-        return success_flag
+    store=models.OneToOneField('Store',verbose_name='店舗',on_delete=models.CASCADE)
+    text=models.TextField()
 
 class Opinion(models.Model):
-    shop_ID = models.PositiveIntegerField()
-    opinion_message = models.CharField(max_length=2000)
-    send_time = models.DateTimeField(auto_now_add=true)
+    store=models.ForeignKey('Store',verbose_name='店舗',on_delete=models.CASCADE)
+    text=models.TextField()
 
-    def GetOpinionBoxInfo(self,shop_ID):
-        success_flag = 1
-        opinionbox_info = Opinion.objects.filter(shop_ID=shop_ID)
-        return success_flag,opinionbox_info
-    
-    def UpdateOpinionBox(self,shop_ID,text):
-        success_flag = 1
-        new_opinion_info = Opinion(
-            shop_ID = shop_ID,
-            opinion_message = text,
-        )
-        new_opinion_info.save(force_insert=true)
-        return success_flag

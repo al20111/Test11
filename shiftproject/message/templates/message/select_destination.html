@@ -3,7 +3,7 @@
 {% block title %}送信先選択{% endblock %}
 {% block h1 %}送信先選択{% endblock %}
 {% block content %}
-{% for id,name,unread in dest_list %}
-    <p><a href="/message/history/{{user_id}}/{{id}}/">{{name}}</a>未読数{{unread}}</p>
+{% for id,unread in dest_list %}
+    <p><a href="/message/history/{{id}}/">{{id}}</a>未読数{{unread}}</p>
 {% endfor %}
 {% endblock content %}
