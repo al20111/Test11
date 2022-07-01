@@ -141,12 +141,15 @@ def authorize_detail(request):
     }
     return HttpResponse(template.render(context, request))
 
-def flag_shift(request, id):
-    template = loader.get_template('account/index.html')
+def authorizeShift(request, id):
+    template = loader.get_template('shift/authorize.html')
     shift = ShiftData.objects.get(id=id)
     shift.confirmed_flag=1
     shift.save()
-    return HttpResponse(template.render({}, request))
+    context = {
+        'form': DateForm()
+    }
+    return HttpResponse(template.render(context, request))
 
 #シフト閲覧
 def confirm(request):
