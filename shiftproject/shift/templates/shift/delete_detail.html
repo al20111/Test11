@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block title %}シフト削除{% endblock %}
+{% block h1 %}シフト削除{% endblock %}
+{% block content %}
+
+{% if shift_list %}
+  <table border="1">
+    {% for shift in shift_list %}
+    <tr>
+      <td>{{ shift.user_id }}</td>
+      <td>{{ shift.date }}</td>
+      <td>{{ shift.start_time }}</td>
+      <td>{{ shift.end_time }}</td>
+      <td>{{ shift.confirmed_flag }}</td>
+      <td><button onclick="location.href='{% url 'shift:deleteShift' shift.id %}'">削除</button></td>
+    </tr>
+    {% endfor %}
+  </table>
+{% endif %}
+
+{% endblock %}
