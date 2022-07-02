@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+
+{% block title %}送信先選択{% endblock %}
+{% block h1 %}送信先選択{% endblock %}
+{% block content %}
+{% for id,unread in dest_list %}
+    <p><a href="/shift/history/{{id}}/">{{id}}</a>未読数{{unread}}</p>
+{% endfor %}
+{% endblock content %}
