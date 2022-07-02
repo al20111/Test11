@@ -11,5 +11,5 @@ urlpatterns=[
     path('listShift/',views.get_shift,name='get_shift'),
     path('confirmShift/',views.confirmShift,name='confirm_shift'),
     path('authorize/authorize_detail/', views.authorize_detail, name='authorize_detail'),
-    path('authorize/authorize_detail/authorizeShift/<int:id>', views.authorizeShift, name='authorizeShift'),
+    path('authorizeShift/<int:id>', views.authorizeShift, name='authorizeShift'),
 ]
