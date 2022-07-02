@@ -18,8 +18,8 @@ class Store(models.Model):
         return self.name
 
 class Message(models.Model):
-    indivisual_ID = models.CharField(max_length=20)
-    dest_ID = models.CharField(max_length=20)
+    indivisual_ID = models.PositiveIntegerField()
+    dest_ID = models.PositiveIntegerField()
     message = models.CharField(max_length=2000)
     read_status = models.PositiveIntegerField()
     send_time = models.DateTimeField(auto_now_add=true)

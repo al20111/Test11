@@ -7,15 +7,12 @@
 </head-->
 {% if messages %}
     {% for message in messages %}
-        {% if message.indivisual_ID == user_id %}
-            <p style="text-align:right">{{message.indivisual_ID}}</p>
+        {% if message.indivisual_ID == user_id.id %}
+            <p style="text-align:right">{{user_id.username}}</p>
             <p style="text-align:right">{{message.message}}</p>
             <!-- css適用するとき用 -->
             <!-- 自分の吹き出し -->
-            <!--div class="message__right"-->
-                <!--figure>
-                <img src="icon.png" />
-                </figure>
+            <!--div class="message__right">
                 <div class="message__right">
                 <div class="name">{{message.indivisual_ID}}</div>
                 <div class="text">{{message.message}}</div-->
@@ -26,17 +23,13 @@
                 {% endif %}
             <!--/div-->
         {% else %}
-            <p>{{message.indivisual_ID}}</p>
+            <p>{{dest_name}}</p>
             <p>{{message.message}}</p>
             <p>{{message.send_time}}</p>
             <!-- css適用するとき用？ -->
             <!-- 相手の吹き出し -->
             <!--div class="message__left">
-                <figure>
-                <img src="icon.png" />
-                </figure>
-                <div class="message__left-text">
-                <div class="name">{{message.indivisual_ID}}</div>
+                <div class="name">{{dest_name}}</div>
                 <div class="text">{{message.message}}</div>
                 <span class="date">{{message.send_time}}</span>
             </div-->
