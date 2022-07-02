@@ -132,7 +132,7 @@ def authorize(request):
 
 def authorize_detail(request):
     template = loader.get_template('shift/authorize_detail.html')
-    d = request.POST.get('date_field')
+    d = request.POST['date_field']
     shifts = ShiftData.objects.filter(date=d, confirmed_flag=0)
     shift_list = []
     for shift in shifts:
@@ -206,7 +206,7 @@ def delete(request):
 
 def delete_detail(request):
     template = loader.get_template('shift/delete_detail.html')
-    d = request.POST.get('date_field')
+    d = request.POST['date_field']
     user = request.user.id
     shifts = ShiftData.objects.filter(user_id=user, date=d)
     shift_list = []
