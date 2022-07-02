@@ -11,7 +11,7 @@ from django.views.generic import(
     UpdateView,
     DetailView,
 )
-
+# message
 def GetDestinationList(user_id):
     shop_id = Staff.objects.filter(user=user_id).values('store')[0]['store']
     dest_id_list = Staff.objects.filter(store=shop_id).values('user')
