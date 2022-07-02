@@ -213,7 +213,7 @@ def delete_detail(request):
     for shift in shifts:
         start_time = str(shift.start_time//100).zfill(2) + ":" + str(shift.start_time%100).zfill(2)
         end_time = str(shift.end_time//100).zfill(2) + ":" + str(shift.end_time%100).zfill(2)
-        if shift.confirmed_flag == 0: confirmed_flag = "承認中"
+        if shift.confirmed_flag == 0: confirmed_flag = "未承認"
         else: confirmed_flag = "承認済"
         shift_list.append(
             {
