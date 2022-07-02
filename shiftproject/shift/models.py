@@ -1,4 +1,6 @@
 from django.db import models
+from django.db.models import Q
+from sympy import true
 # Create your models here.
 class Staff(models.Model):
     user=models.OneToOneField('accounts.User',verbose_name='スタッフ',on_delete=models.CASCADE)
