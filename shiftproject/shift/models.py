@@ -13,6 +13,3 @@ class ShiftData(models.Model):
     start_time=models.IntegerField()
     end_time=models.IntegerField()
     confirmed_flag=models.IntegerField()
-
-class DateModel(models.Model):
-    date_field = models.DateField()
