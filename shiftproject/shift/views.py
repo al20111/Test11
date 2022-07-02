@@ -4,7 +4,8 @@ from django.http import Http404
 import time
 from django.shortcuts import render
 from django.template import loader
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
 from .forms import CalendarForm,ShiftForm,ConfirmForm,DateForm
@@ -155,11 +156,10 @@ def authorize_detail(request):
     return HttpResponse(template.render(context, request))
 
 def authorizeShift(request, id):
-    template = loader.get_template('account/index.html')
     shift = ShiftData.objects.get(id=id)
     shift.confirmed_flag=1
     shift.save()
-    return HttpResponse(template.render({}, request))
+    return HttpResponseRedirect(reverse('shift:authorize'))
 
 #シフト閲覧
 def confirm(request):
