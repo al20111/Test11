@@ -8,7 +8,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.urls import reverse
 from django.middleware.csrf import get_token
 from django.http import JsonResponse
-from .forms import CalendarForm,ShiftForm,ConfirmForm,DateForm
+from .forms import CalendarForm,ShiftForm,ConfirmForm
 
 #シフト編集
 def edit(request):
@@ -122,10 +122,7 @@ def authorize(request):
     """
     get_token(request)
     template = loader.get_template('shift/authorize.html')
-    context = {
-        'form': DateForm()
-    }
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render({}, request))
 
    # return render(
     #    request,
@@ -205,10 +202,7 @@ def confirmShift(request):
 
 def delete(request):
     template = loader.get_template('shift/delete.html')
-    context = {
-        'form': DateForm()
-    }
-    return HttpResponse(template.render(context, request))
+    return HttpResponse(template.render({}, request))
 
 def delete_detail(request):
     template = loader.get_template('shift/delete_detail.html')
