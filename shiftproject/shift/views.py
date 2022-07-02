@@ -121,7 +121,9 @@ def authorize(request):
     """
     get_token(request)
     template = loader.get_template('shift/authorize.html')
+    shift_list = ShiftData.objects.filter(confirmed_flag=0)
     context = {
+        'shift_list': shift_list,
         'form': DateForm()
     }
     return HttpResponse(template.render(context, request))
@@ -146,7 +148,9 @@ def authorizeShift(request, id):
     shift = ShiftData.objects.get(id=id)
     shift.confirmed_flag=1
     shift.save()
+    shift_list = ShiftData.objects.filter(confirmed_flag=0)
     context = {
+        'shift_list': shift_list,
         'form': DateForm()
     }
     return HttpResponse(template.render(context, request))
