@@ -20,7 +20,7 @@ class Store(models.Model):
 class Message(models.Model):
     indivisual_ID = models.PositiveIntegerField()
     dest_ID = models.PositiveIntegerField()
-    message = models.CharField(max_length=2000)
+    message = models.CharField(max_length=1000)
     read_status = models.PositiveIntegerField()
     send_time = models.DateTimeField(auto_now_add=true)
 
