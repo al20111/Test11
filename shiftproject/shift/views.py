@@ -1,8 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import redirect,render
+from accounts.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin 
 from django.urls import reverse_lazy
-from shift.forms import StaffCreateForm
-from .models import Board,Opinion,Store,Staff
+from shift.forms import StaffCreateForm, MessageForm
+from .models import Message,Board,Opinion,Store,Staff
 from django.views.generic import(
     View,
     ListView,
@@ -11,6 +12,74 @@ from django.views.generic import(
     DetailView,
 )
 # Create your views here.
+
+def GetDestinationList(user_id):
+    shop_id = Staff.objects.filter(user=user_id).values('store')[0]['store']
+    dest_id_list = Staff.objects.filter(store=shop_id).values('user')
+    dest_list = []
+    dest_name_list = []
+    for dest_id in dest_id_list:
+        dest = dest_id['user']
+        dest_name = User.objects.filter(id=dest_id['user']).values_list('username',flat=True)[0]
+        dest_list.append(dest)
+        dest_name_list.append(dest_name)
+    dest_list.pop(dest_list.index(user_id.id))
+    dest_name_list.pop(dest_name_list.index(user_id.username))
+    return dest_list,dest_name_list
+
+def GetDestinationInfo(request,user_id):
+    user_id = request.user
+    dest_list,dest_name_list = GetDestinationList(user_id)
+    flag,unread_list = Message().CalcUnreadNumberList(user_id.id,dest_list)
+    dest_zip = zip(dest_name_list,unread_list)
+    if not flag:
+        return render(
+            request,
+            'shift/select_destination.html',
+            {'dest_list':dest_zip}
+        )
+    return render(
+        request,
+        'shift/select_destination.html',
+        {'dest_list':dest_zip}
+    )
+
+def send(request):
+    return redirect("shift:select",user_id=request.user)
+
+
+def GetMessageHistory(request,dest_id):
+    ind_ID = request.user.id
+    dest_ID = User.objects.filter(username=dest_id).values_list('id',flat=True)[0]
+    dest_name = dest_id
+    messages = Message()
+    flag,messages = messages.GetMessageHistory(ind_ID,dest_ID)
+    
+    if request.method == "POST":
+        message_info = Message(
+            indivisual_ID = ind_ID,
+            dest_ID = dest_ID,
+            read_status = 0
+        )
+        form = MessageForm(request.POST,instance=message_info)
+        if form.is_valid():
+            message = form.save(commit=False)
+            message.post = messages
+            message.save()
+            return redirect("shift:history",dest_id=dest_id)
+    else:
+        form = MessageForm()
+    if not flag:
+        return render(
+            request,
+            'shift/history.html',
+            {'messages':messages,'form': form,'user_id':request.user,'dest_name':dest_name}
+        )
+    return render(
+        request,
+        'shift/history.html',
+        {'messages':messages,'form': form,'user_id':request.user,'dest_name':dest_name}
+    )
 
 class ListOBView(ListView):
     model=Board
