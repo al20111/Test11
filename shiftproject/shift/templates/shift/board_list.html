@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block title %}意見箱・掲示板{% endblock %}
+{% block h1 %}掲示板{% endblock %}
+{% block content %}
+{% for item in object_list %}
+{% if request.user.is_staff %}
+<a href="{% url 'shift:board-edit' item.pk %}">掲示板編集</a>
+{% endif %}
+<a href="{% url 'shift:board-detail' item.pk%}">掲示板確認</a>
+{% endfor %}
+{% if request.user.is_staff %}
+<a href="{% url 'shift:opinion-list' %}">意見箱</a>
+{% else %}
+<a href="{% url 'shift:opinion-create' %}">意見送信</a>
+{% endif %}
+
+{% endblock content %}

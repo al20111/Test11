@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block title %}メニュー{% endblock %}
+{% block h1 %}メニュー{% endblock %}
+{% block content %}
+    <div>
+        {% if request.user.is_staff %}
+        {% else %}
+        {% endif %}
+        <a href="{% url 'shift:OB' %}">掲示板・意見箱</a>
+        
+    </div>
+{% endblock content %}

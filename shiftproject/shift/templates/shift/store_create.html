@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}店舗選択|シフト{% endblock %}
+{% block h1 %}店舗選択{% endblock %}
+{% block content %}
+    <form method='POST'>{% csrf_token %}
+        {{form.as_p}}
+        <input type='submit' Value='確定'>
+    </form>
+{% endblock content %}
