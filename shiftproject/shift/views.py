@@ -53,7 +53,7 @@ def add_shift(request):
 
     # 登録処理
     shift = ShiftData(
-        user_id = 000000,
+        user_id = request.user.id,
         date = formatted_date,
         start_time = start_time,
         end_time = end_time,
@@ -202,3 +202,41 @@ def confirmShift(request):
     )
 
     return JsonResponse(confirmShift, safe=False)
+
+def delete(request):
+    template = loader.get_template('shift/delete.html')
+    context = {
+        'form': DateForm()
+    }
+    return HttpResponse(template.render(context, request))
+
+def delete_detail(request):
+    template = loader.get_template('shift/delete_detail.html')
+    d = request.POST.get('date_field')
+    user = request.user.id
+    shifts = ShiftData.objects.filter(user_id=user, date=d)
+    shift_list = []
+    for shift in shifts:
+        start_time = str(shift.start_time//100).zfill(2) + ":" + str(shift.start_time%100).zfill(2)
+        end_time = str(shift.end_time//100).zfill(2) + ":" + str(shift.end_time%100).zfill(2)
+        if shift.confirmed_flag == 0: confirmed_flag = "承認中"
+        else: confirmed_flag = "承認済"
+        shift_list.append(
+            {
+                "id": shift.id,
+                "user_id": shift.user_id,
+                "date": shift.date,
+                "start_time": start_time,
+                "end_time": end_time,
+                "confirmed_flag": confirmed_flag,
+            }
+        )
+    context = {
+        'shift_list': shift_list,
+    }
+    return HttpResponse(template.render(context, request))
+
+def deleteShift(request, id):
+    shift = ShiftData.objects.get(id=id)
+    shift.delete()
+    return HttpResponseRedirect(reverse('shift:delete'))
