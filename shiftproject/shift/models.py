@@ -64,7 +64,7 @@ class Message(models.Model):
         )
         new_message.save(force_insert=True)
         message_history = Message.objects.filter(
-            Message(indivisual_ID = indivisual_ID) | Message(indivisual_ID = dest_ID)
+            Q(indivisual_ID = indivisual_ID) | Q(indivisual_ID = dest_ID)
         )
         return success_flag,message_history
 
