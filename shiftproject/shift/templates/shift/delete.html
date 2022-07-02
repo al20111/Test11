@@ -3,10 +3,31 @@
 {% block title %}シフト削除{% endblock %}
 {% block h1 %}シフト削除{% endblock %}
 {% block content %}
-<form action="delete_detail/" method="post">
-  {% csrf_token %}
-  <input type="date" name="date_field">
-  <input type="submit" value="Search">
-</form>
+{% load static %}<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+
+    <!-- for admin widgets -->
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/base.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'admin/css/forms.css' %}"/>
+
+    <script type="text/javascript" src="{% url 'admin:jsi18n' %}"></script>
+    {{ form.media }}
+    <script type="text/javascript" src="{% static 'admin/js/core.js' %}"></script>
+    <script type="text/javascript" src="{% static 'admin/js/admin/RelatedObjectLookups.js' %}"></script>
+    <!-- end for admin widgets -->
+
+</head>
+<body>
+  <form action="delete_detail/" method="post">
+    {% csrf_token %}
+    {{ form }}
+    <input type="submit" value="Search">
+  </form>
+</body>
+
+</html>
 
 {% endblock content %}
