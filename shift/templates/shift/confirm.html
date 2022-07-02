@@ -1,0 +1,105 @@
+{% extends 'base.html' %}
+
+{% block title %}閲覧{% endblock %}
+{% block h1 %}閲覧{% endblock %}
+{% block content %}
+<head>
+ 
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
+    <link rel="stylesheet" href="./../../static/shift/timetablejs.css">
+</head>
+
+<body>
+    <div id='calendar'></div>
+
+
+    <script type="text/javascript">
+        
+        function select_date(year, month, date){
+            let date_area = document.getElementById('selected_date');
+            date_area.innerHTML = String(year) + "年" + String(month) + "月" + String(date) + "日";
+        }
+
+        function money(salary){
+            let money = document.getElementById('money');
+            money.innerHTML = String(salary);
+        }
+
+    </script>
+
+
+    {% load static %}
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+    <script type = "text/javascript" src="{% static 'shift/timetable.js' %}"></script>
+    <script type = "text/javascript" src="{% static 'shift/confirm_hour.js' %}"></script>
+    <script type = "text/javascript">
+        document.addEventListener('DOMContentLoaded', function () {
+        
+        // CSRF対策
+        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+        axios.defaults.xsrfCookieName = "csrftoken"
+        var calendarEl = document.getElementById('calendar');
+        var calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+
+            selectable: true,
+            select: function (info) {
+
+                // シフト時間表示処理,給料情報の呼び出し
+                    axios
+                        .post("/shift/ShiftMine/", {
+                         date: info.start.valueOf(),
+                        })
+                        .then((response) => {
+                        //選択された日付のシフト時間を表示
+                        //YEAR, MONTH, DATE, S_TIME, E_TIME, USER ,  MONEY = response.data
+                        list = response.data;
+                        select_date(list[0].year,list[0].month,list[0].date);
+                        TimeTableView(list[0].user,list[0].year,list[0].month,list[0].date,list[0].confirmShift_S,list[0].confirmShift_E);
+                        money(list[0].money);
+                        
+                        
+                        })
+                        .catch(() => {
+                        // バリデーションエラーなど
+                            alert("シフトがありません");
+                        });
+                             //    }
+            },
+            events: function (info, successCallback, failureCallback) {
+
+                axios
+                    .post("/shift/confirmShift/", {
+                        start_date: info.start.valueOf(),
+                        end_date: info.end.valueOf(),
+                    })
+                    .then((response) => {
+                        calendar.removeAllEvents();
+                        successCallback(response.data);
+                    })
+                    .catch(() => {
+                         バリデーションエラーなど
+                        alert("登録に失敗しました");
+                    });
+            },
+
+        });
+
+        calendar.render();
+    });
+    </script>
+    
+    <h1>
+        <p id = "selected_date"></p> 
+    </h1>
+
+    <h1>シフト時間</h1>
+    <div class="timetable"></div>
+
+    <h1>予想給料</h1>
+    <p id = "money"></p>
+
+</body>
+{% endblock content %}
