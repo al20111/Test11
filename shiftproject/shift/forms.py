@@ -1,5 +1,4 @@
 from django import forms
-from django.contrib.admin.widgets import AdminDateWidget
 
 class CalendarForm(forms.Form):
 
@@ -13,6 +12,3 @@ class ShiftForm(forms.Form):
 
 class ConfirmForm(forms.Form):
     date = forms.IntegerField(required=True)
-
-class DateForm(forms.Form):
-    date_field = forms.DateField(widget=AdminDateWidget())
