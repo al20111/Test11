@@ -1,6 +1,5 @@
 from django.db import models
 from django.db.models import Q
-from sympy import true
 # Create your models here.
 class Staff(models.Model):
     user=models.OneToOneField('accounts.User',verbose_name='スタッフ',on_delete=models.CASCADE)
@@ -22,7 +21,7 @@ class Message(models.Model):
     dest_ID = models.PositiveIntegerField()
     message = models.CharField(max_length=2000)
     read_status = models.PositiveIntegerField()
-    send_time = models.DateTimeField(auto_now_add=true)
+    send_time = models.DateTimeField(auto_now_add=True)
 
     def CalcUnreadNumberList(self,indivisual_ID,dest_ID_list):
         success_flag = 1
@@ -47,7 +46,7 @@ class Message(models.Model):
         )
         for message in dest_message:
             message.read_status = 1
-            message.save(force_update=true)
+            message.save(force_update=True)
         
         message_history = Message.objects.filter(
             Q(indivisual_ID = indivisual_ID,dest_ID = dest_ID) 
@@ -63,7 +62,7 @@ class Message(models.Model):
             message = message,
             read_status = 0
         )
-        new_message.save(force_insert=true)
+        new_message.save(force_insert=True)
         message_history = Message.objects.filter(
             Message(indivisual_ID = indivisual_ID) | Message(indivisual_ID = dest_ID)
         )
