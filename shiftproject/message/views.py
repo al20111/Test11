@@ -1,3 +1,4 @@
+from asyncio.windows_events import NULL
 from django.shortcuts import redirect, render
 from account.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -67,7 +68,7 @@ def ajax_update_history(request,dest_id):
             content.append({'messages':m.message,'dest_name':dest_name,'send_time':m.send_time})
         json = {'flag':detect_flag,'content':content}
     else:
-        json = {}
+        json = {'flag':detect_flag,'content':NULL}
     return JsonResponse(json)
 
 def GetMessageHistory(request,dest_id):

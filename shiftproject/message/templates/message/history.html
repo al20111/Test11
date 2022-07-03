@@ -63,19 +63,19 @@
                 dataType: 'json',
                 success: response => {
                     var jsonObjects = JSON.parse(response);
-                    $.each(jsonObjects.content, function (index, jsonObject) {
-                        $("#content_area").append(
-                            '<div class="opponent_message">'+
-                            '<p>'+jsonObject.dest_name+'</p>'+
-                            '<p>'+jsonObject.messages+'</p>'+
-                            '<p>'+jsonObject.send_time+'</p>'+
-                            '</div>'
-                        );
-                    })
-                    if(jsonObjects.flag == 1){
-                        let pageHeight = $(document).innerHeight();
-                        let winHeiht = $(window).innerHeight();
-                        let sclTop = $(window).scrollTop();
+                    if(jsonObjects.flag == '1'){
+                        $.each(jsonObjects.content, function (index, jsonObject) {
+                            $("#content_area").append(
+                                '<div class="opponent_message">'+
+                                '<p>'+jsonObject.dest_name+'</p>'+
+                                '<p>'+jsonObject.messages+'</p>'+
+                                '<p>'+jsonObject.send_time+'</p>'+
+                                '</div>'
+                            );
+                        })
+                        var element = document.documentElement;
+                        var bottom = element.scrollHeight - element.clientHeight;
+                        window.scroll(0, bottom);
                     }
                 }
             });
