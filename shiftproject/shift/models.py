@@ -1,6 +1,7 @@
 from django.db import models
 from django.db.models import Q
 from sympy import true
+from django.conf import settings
 # Create your models here.
 class Staff(models.Model):
     user=models.OneToOneField('accounts.User',verbose_name='スタッフ',on_delete=models.CASCADE)
@@ -77,3 +78,11 @@ class Board(models.Model):
 class Opinion(models.Model):
     store=models.ForeignKey('Store',verbose_name='店舗',on_delete=models.CASCADE)
     text=models.TextField()
+
+class ShiftData(models.Model):
+    user_id=models.CharField(max_length=100)
+    date=models.DateField()
+    start_time=models.IntegerField()
+    end_time=models.IntegerField()
+    confirmed_flag=models.IntegerField()
+    store_id=models.CharField(max_length=20)
