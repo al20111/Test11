@@ -13,5 +13,7 @@ urlpatterns=[
     path('store_create',views.CreateStoreView.as_view(),name='store-info'),
     path('select_destination/<slug:user_id>/', views.GetDestinationInfo, name='select'),
     path('history/<slug:dest_id>/', views.GetMessageHistory, name='history'),
+    path('send_message/<slug:dest_id>/', views.ajax_send_message, name='send_message'),
+    path('update_history/<slug:dest_id>/', views.ajax_update_history, name='update_history'),
 
 ]

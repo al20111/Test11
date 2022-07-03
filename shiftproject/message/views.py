@@ -11,6 +11,8 @@ from django.views.generic import(
     UpdateView,
     DetailView,
 )
+from django.http import JsonResponse
+from django.template.loader import render_to_string
 
 def GetDestinationList(user_id):
     shop_id = Staff.objects.filter(user=user_id).values('store')[0]['store']
@@ -46,6 +48,27 @@ def GetDestinationInfo(request,user_id):
 def send(request):
     return redirect("message:select",user_id=request.user)
 
+def ajax_update_history(request,dest_id):
+    ind_ID = request.user.id
+    dest_name = dest_id
+    dest_ID = User.objects.filter(username=dest_name).values_list('id',flat=True)[0]
+    detect_flag = Message().DetectUpdateMessageHistory(ind_ID,dest_ID)
+    if detect_flag == 1:
+        messages = Message.objects.filter(
+            indivisual_ID = dest_ID,
+            dest_ID = ind_ID,
+            read_status = 0
+        )
+        for message in messages:
+            message.read_status = 1
+            message.save(force_update=True)
+        content = []
+        for m in messages:
+            content.append({'messages':m.message,'dest_name':dest_name,'send_time':m.send_time})
+        json = {'flag':detect_flag,'content':content}
+    else:
+        json = {}
+    return JsonResponse(json)
 
 def GetMessageHistory(request,dest_id):
     ind_ID = request.user.id
@@ -53,36 +76,48 @@ def GetMessageHistory(request,dest_id):
     dest_name = dest_id
     messages = Message()
     flag,messages = messages.GetMessageHistory(ind_ID,dest_ID)
-    
-    if request.method == "POST":
-        message_info = Message(
-            indivisual_ID = ind_ID,
-            dest_ID = dest_ID,
-            read_status = 0
-        )
-        form = MessageForm(request.POST,instance=message_info)
-        if form.is_valid():
-            message = form.save(commit=False)
-            message.post = messages
-            message.save()
-            return redirect("message:history",dest_id=dest_id)
-    else:
-        form = MessageForm()
+    form = MessageForm()
+    context = {'messages':messages,'form':form,'user_id':request.user,'dest_name':dest_name}
     if not flag:
         return render(
             request,
             'message/history.html',
-            {'messages':messages,'form': form,'user_id':request.user,'dest_name':dest_name}
+            context
         )
     return render(
         request,
         'message/history.html',
-        {'messages':messages,'form': form,'user_id':request.user,'dest_name':dest_name}
+        context
     )
+
+def ajax_send_message(request, dest_id):
+    ind_ID = request.user.id
+    dest_ID = User.objects.filter(username=dest_id).values_list('id',flat=True)[0]
+
+    json = { "error":True }
+    message_info = Message(
+        indivisual_ID = ind_ID,
+        dest_ID = dest_ID,
+        read_status = 0
+    )
+    form = MessageForm(request.POST,instance=message_info)
+    if form.is_valid():
+        message = form.save(commit=False)
+        message.save()
+        json = {
+            'error':False,
+            'messages':request.POST,
+            'username':request.user.username,
+            'send_time':message_info.send_time,
+        }
+        return JsonResponse(json)
+    else:
+        print("Validation Error")
+        return JsonResponse(json)
 
 class ListOBView(ListView):
     model=Board
-    template_name='massage/board_list.html'
+    template_name='message/board_list.html'
     def get_queryset(self):
         store=Staff.objects.get(user=self.request.user)
         store_id=store.store
