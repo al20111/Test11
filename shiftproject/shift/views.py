@@ -1,6 +1,7 @@
 from django.shortcuts import redirect,render
 from accounts.models import User
-from django.contrib.auth.mixins import LoginRequiredMixin 
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required 
 from django.urls import reverse_lazy
 from shift.forms import StaffCreateForm, MessageForm
 from .models import Message,Board,Opinion,Store,Staff
@@ -81,7 +82,7 @@ def GetMessageHistory(request,dest_id):
         {'messages':messages,'form': form,'user_id':request.user,'dest_name':dest_name}
     )
 
-class ListOBView(ListView):
+class ListOBView(LoginRequiredMixin,ListView):
     model=Board
     template_name='shift/board_list.html'
     def get_queryset(self):
@@ -90,18 +91,18 @@ class ListOBView(ListView):
         queryset=super().get_queryset()
         return queryset.filter(store=store_id)
 
-class UpdateViewBoradView(UpdateView):
+class UpdateViewBoradView(LoginRequiredMixin,UpdateView):
     model=Board
     fields=(['text'])
     template_name='shift/board_edit.html'
     success_url=reverse_lazy('shift:OB')
 
-class DetailBoardView(DetailView):
+class DetailBoardView(LoginRequiredMixin,DetailView):
     model=Board
     fields=(['text'])
     template_name='shift/board_detail.html'
 
-class CreateOpinionView(CreateView):
+class CreateOpinionView(LoginRequiredMixin,CreateView):
     model=Opinion
     fields=(['text'])
     template_name='shift/opinion_create.html'
@@ -112,7 +113,7 @@ class CreateOpinionView(CreateView):
         form.instance.store=store_id
         return super().form_valid(form)
 
-class ListOpinionView(ListView):
+class ListOpinionView(LoginRequiredMixin,ListView):
     model=Opinion
     template_name='shift/opinion_list.html'
     success_url=reverse_lazy('shift:opinion-list')
