@@ -13,4 +13,10 @@ urlpatterns=[
     path('store_create',views.CreateStoreView.as_view(),name='store-info'),
     path('select_destination/<slug:user_id>/', views.GetDestinationInfo, name='select'),
     path('history/<slug:dest_id>/', views.GetMessageHistory, name='history'),
+    path('edit/',views.edit,name='edit'),
+    path('confirm/',views.confirm,name='confirm'),
+    path('addShift/',views.add_shift,name='add_shift'),
+    path('listShift/',views.get_shift,name='get_shift'),
+    path('confirmShift/',views.confirmShift,name='confirmShift'),
+    path('ShiftMine/',views.shiftMine,name='shiftMine'),
 ]
