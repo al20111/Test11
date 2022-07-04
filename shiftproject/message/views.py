@@ -1,4 +1,3 @@
-from asyncio.windows_events import NULL
 from django.shortcuts import redirect, render
 from account.models import User
 from django.contrib.auth.mixins import LoginRequiredMixin
