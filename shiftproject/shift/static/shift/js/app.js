@@ -41,10 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
 
             axios
                 .post("/shift/listShift/", {
-                    //date: info.start.valueOf(),
-
-                    //start_time: splitedTime[1],
-                    //end_time: splitedTime[0],
                     start_date: info.start.valueOf(),
                     end_date: info.end.valueOf(),
                 })

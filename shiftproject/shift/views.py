@@ -247,6 +247,11 @@ def confirm(request):
     template = loader.get_template('shift/confirm.html')
     return HttpResponse(template.render())
 
+def confirm_author(request):
+    get_token(request)
+    template = loader.get_template('shift/confirm_author.html')
+    return HttpResponse(template.render())
+
 def confirmShift(request):
     if request.method == "GET":
         # GETは対応しない
@@ -285,6 +290,44 @@ def confirmShift(request):
             {
                 
                 "title": Time,
+                "start": shift.date,
+                "end": shift.date,
+            }
+        )
+    return JsonResponse(list, safe=False)
+
+def confirmShiftAuthor(request):
+    if request.method == "GET":
+        # GETは対応しない
+        raise Http404()
+    
+    # JSONの解析
+    datas = json.loads(request.body)
+
+      # バリデーション
+    calendarForm = CalendarForm(datas)
+    if calendarForm.is_valid() == False:
+        # バリデーションエラー
+        raise Http404()
+    
+    # リクエストの取得
+    start_date = datas["start_date"]
+    end_date = datas["end_date"]
+
+    # 日付に変換。JavaScriptのタイムスタンプはミリ秒なので秒に変換
+    formatted_start_date = time.strftime(
+        "%Y-%m-%d", time.localtime(start_date / 1000))
+    formatted_end_date = time.strftime(
+        "%Y-%m-%d", time.localtime(end_date / 1000))
+    Store_id = Staff.objects.get(user = request.user,)
+    confirmShifts = ShiftData.objects.filter(
+        date__lt=formatted_end_date, date__gt=formatted_start_date, store_id = Store_id.store,
+    )
+    list = []
+    for shift in confirmShifts:
+        list.append(
+            {
+                "title": shift.user_id,
                 "start": shift.date,
                 "end": shift.date,
             }
@@ -353,3 +396,42 @@ def shiftMine(request):
     )
 
     return JsonResponse(list, safe=False)
+
+def shiftOthers(request):
+    if request.method == "GET":
+        # GETは対応しない
+        raise Http404()
+    
+    # JSONの解析
+    datas = json.loads(request.body)
+    
+    # バリデーション
+    confirmForm = ConfirmForm(datas)
+    if confirmForm.is_valid() == False:
+        # バリデーションエラー
+        raise Http404()
+
+    # リクエストの取得
+    DATE = datas["date"]
+
+    # 日付に変換。JavaScriptのタイムスタンプはミリ秒なので秒に変換
+    formatted_date = time.strftime(
+        "%Y-%m-%d", time.localtime(DATE / 1000))
+    year = time.strftime("%Y", time.localtime(DATE / 1000))
+    month = time.strftime("%m", time.localtime(DATE / 1000))
+    date = time.strftime("%d", time.localtime(DATE / 1000))
+    Store_id = Staff.objects.get(user = request.user,)
+    Shifts = ShiftData.objects.filter(
+        store_id = Store_id.store, date = formatted_date, 
+    )
+    list = []
+    for Shift in Shifts :
+        list.append(
+            {
+            #str(year),str(month), str(date), str(Shift.start_time), str(Shift.end_time), str(Shift.user_id), str(Shift.confirmed_flag),
+            "year":year,"month":month, "date":date, "start":Shift.start_time, "end":Shift.end_time, "user":Shift.user_id, "flag":Shift.confirmed_flag,
+            }
+        )
+
+    return JsonResponse(list, safe=False)
+
