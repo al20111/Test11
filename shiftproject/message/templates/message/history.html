@@ -41,9 +41,9 @@
             else {
                 var jsonObjects = JSON.parse(response);
                 $("#content_area").append(
-                    '<div class="my_message">' +
-                    '<p style="text-align:right">' + jsonObjects.username + '</p>' +
-                    '<p style="text-align:right">' + jsonObjects.messages + '</p>' +
+                    '<div class="message__right">' +
+                    '<p class="name">' + jsonObjects.username + '</p>' +
+                    '<p class="text">' + jsonObjects.messages + '</p>' +
                     '<p style="text-align:right">' + jsonObjects.send_time + '</p>' +
                     '</div>'
                 )
@@ -65,9 +65,9 @@
                     var jsonObjects = JSON.parse(data.content);
                     $.each(jsonObjects, function (index, jsonObject) {
                         $("#content_area").append(
-                            '<div class="opponent_message">' +
-                            '<p>' + jsonObject.dest_name + '</p>' +
-                            '<p>' + jsonObject.messages + '</p>' +
+                            '<div class="message__left">' +
+                            '<p class="name">' + data.dest_name + '</p>' +
+                            '<p class="text">' + jsonObject.messages + '</p>' +
                             '<p>' + jsonObject.send_time + '</p>' +
                             '</div>'
                         );
