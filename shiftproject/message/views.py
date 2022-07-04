@@ -67,7 +67,7 @@ def ajax_update_history(request,dest_id):
             content.append({'messages':m.message,'dest_name':dest_name,'send_time':m.send_time})
         json = {'flag':True,'content':content}
     else:
-        json = {'flag':False,'content':NULL}
+        json = {'flag':False,'content':None}
     return JsonResponse(json)
 
 def GetMessageHistory(request,dest_id):
