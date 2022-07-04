@@ -1,105 +1,213 @@
 {% extends 'base.html' %}
 
 {% block title %}閲覧{% endblock %}
-{% block h1 %}閲覧{% endblock %}
+{% block h1 %}<div class="confirm-title">閲覧</div>{% endblock %}
 {% block content %}
+
 <head>
- 
+
     <meta charset='utf-8' />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
     <link rel="stylesheet" href="./../../static/shift/css/timetablejs.css">
 </head>
 
 <body>
-    <div id='calendar'></div>
+    <div class="items-list">
+        <div class="container container-calendar">
+            <div class="calendar" id='calendar'></div>
 
 
-    <script type="text/javascript">
-        
-        function select_date(year, month, date){
-            let date_area = document.getElementById('selected_date');
-            date_area.innerHTML = String(year) + "年" + String(month) + "月" + String(date) + "日";
-        }
+            <script type="text/javascript">
 
-        function money(salary){
-            let money = document.getElementById('money');
-            money.innerHTML = String(salary);
-        }
+                function select_date(year, month, date) {
+                    let date_area = document.getElementById('selected_date');
+                    date_area.innerHTML = String(year) + "年" + String(month) + "月" + String(date) + "日";
+                }
 
-    </script>
+                function money(salary) {
+                    let money = document.getElementById('money');
+                    money.innerHTML = String(salary);
+                }
+
+            </script>
 
 
-    {% load static %}
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
-    <script type = "text/javascript" src="{% static 'shift/js/timetable.js' %}"></script>
-    <script type = "text/javascript" src="{% static 'shift/js/confirm_hour.js' %}"></script>
-    <script type = "text/javascript">
-        document.addEventListener('DOMContentLoaded', function () {
-        
-        // CSRF対策
-        axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
-        axios.defaults.xsrfCookieName = "csrftoken"
-        var calendarEl = document.getElementById('calendar');
-        var calendar = new FullCalendar.Calendar(calendarEl, {
-            initialView: 'dayGridMonth',
+            {% load static %}
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+            <script type="text/javascript" src="{% static 'shift/js/timetable.js' %}"></script>
+            <script type="text/javascript" src="{% static 'shift/js/confirm_hour.js' %}"></script>
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
 
-            selectable: true,
-            select: function (info) {
+                    // CSRF対策
+                    axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+                    axios.defaults.xsrfCookieName = "csrftoken"
+                    var calendarEl = document.getElementById('calendar');
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        locale: 'ja',
+                        dayCellContent: function (e) {
+                            e.dayNumberText = e.dayNumberText.replace('日', '');
+                        },
+                        selectable: true,
+                        select: function (info) {
 
-                // シフト時間表示処理,給料情報の呼び出し
-                    axios
-                        .post("/shift/ShiftMine/", {
-                         date: info.start.valueOf(),
-                        })
-                        .then((response) => {
-                        //選択された日付のシフト時間を表示
-                        //YEAR, MONTH, DATE, S_TIME, E_TIME, USER ,  MONEY = response.data
-                        list = response.data;
-                        select_date(list[0].year,list[0].month,list[0].date);
-                        TimeTableView(list[0].user,list[0].year,list[0].month,list[0].date,list[0].confirmShift_S,list[0].confirmShift_E);
-                        money(list[0].money);
-                        
-                        
-                        })
-                        .catch(() => {
-                        // バリデーションエラーなど
-                            alert("シフトがありません");
-                        });
-                             //    }
-            },
-            events: function (info, successCallback, failureCallback) {
+                            // シフト時間表示処理,給料情報の呼び出し
+                            axios
+                                .post("/shift/ShiftMine/", {
+                                    date: info.start.valueOf(),
+                                })
+                                .then((response) => {
+                                    //選択された日付のシフト時間を表示
+                                    //YEAR, MONTH, DATE, S_TIME, E_TIME, USER ,  MONEY = response.data
+                                    list = response.data;
+                                    select_date(list[0].year, list[0].month, list[0].date);
+                                    TimeTableView(list[0].user, list[0].year, list[0].month, list[0].date, list[0].confirmShift_S, list[0].confirmShift_E);
+                                    money(list[0].money);
 
-                axios
-                    .post("/shift/confirmShift/", {
-                        start_date: info.start.valueOf(),
-                        end_date: info.end.valueOf(),
-                    })
-                    .then((response) => {
-                        calendar.removeAllEvents();
-                        successCallback(response.data);
-                    })
-                    .catch(() => {
-                         バリデーションエラーなど
-                        alert("登録に失敗しました");
+
+                                })
+                                .catch(() => {
+                                    // バリデーションエラーなど
+                                    alert("シフトがありません");
+                                });
+                            //    }
+                        },
+                        events: function (info, successCallback, failureCallback) {
+
+                            axios
+                                .post("/shift/confirmShift/", {
+                                    start_date: info.start.valueOf(),
+                                    end_date: info.end.valueOf(),
+                                })
+                                .then((response) => {
+                                    calendar.removeAllEvents();
+                                    successCallback(response.data);
+                                })
+                                .catch(() => {
+                                    バリデーションエラーなど
+                                    alert("登録に失敗しました");
+                                });
+                        },
+
                     });
-            },
 
-        });
+                    calendar.render();
+                });
+            </script>
+        </div>
+        <div class="container container-info">
+            <h1>
+                <p class="selected_date" id="selected_date"></p>
+            </h1>
+            <div class="shift-hour-container">
+                <span class="shift-hour-title">シフト時間</span>
+                <div class="timetable"></div>
+            </div>
+            <div class="expected-salary-container">
+                <span class="expected-salary-title">予想給料</span>
+                <div class="money" id="money"></div>
 
-        calendar.render();
-    });
-    </script>
-    
-    <h1>
-        <p id = "selected_date"></p> 
-    </h1>
-
-    <h1>シフト時間</h1>
-    <div class="timetable"></div>
-
-    <h1>予想給料</h1>
-    <p id = "money"></p>
-
+            </div>
+        </div>
+    </div>
 </body>
+
+<style>
+    .confirm-title {
+        margin-top: -110px;
+    }
+
+    .fc-toolbar-title {
+        text-align: center;
+        color: rgb(0, 0, 0);
+        text-decoration: none;
+        font-family: "Meiryo";
+        padding-left: 350px;
+        padding-top: 20px;
+        text-decoration: underline rgb(24, 206, 63);
+        text-decoration-thickness: 4px;
+    }
+
+    .fc-toolbar {
+        border-bottom-style: solid;
+        border-width: 6px;
+    }
+
+    .fc-toolbar-chunk {
+        padding-right: 10px;
+    }
+
+    .fc-next-button {
+        margin-left: 10px;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    .items-list {
+        display: flex;
+        width: 100%;
+        height: 100%;
+
+    }
+
+    .container-calendar {
+        border: 3px solid;
+        margin-top: -40px;
+        margin-left: 10px;
+        border-radius: 10px;
+        width: 50%;
+    }
+
+    .container-info {
+        margin-left: 20px;
+        /* margin-top: 40px; */
+        margin-right: 10px;
+        position: absolute;
+        width: 45%;
+        right: 10px;
+        height: 70%;
+        margin-bottom: 100px;
+    }
+
+    .shift-hour-container {
+        text-align: center;
+        height: 40%;
+        border: 3px solid black;
+        border-radius: 10px;
+    }
+
+    .expected-salary-container {
+        text-align: center;
+        height: 40%;
+        border: 3px solid black;
+        border-radius: 10px;
+        margin-top: 20px;
+
+    }
+
+    .selected_date {
+        font-family: "Meiryo";
+        text-decoration: underline;
+        margin-top: 0;
+    }
+
+    .shift-hour-title,
+    .expected-salary-title {
+        font-size: 50px;
+    }
+
+    .money {
+        font-size: 50px;
+    }
+
+    .timetable {
+        border: 1px solid;
+        width: 90%;
+        margin: 0 auto;
+    }
+</style>
 {% endblock content %}

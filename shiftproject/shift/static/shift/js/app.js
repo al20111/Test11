@@ -6,7 +6,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'dayGridMonth',
-
+        locale: 'ja',
+        dayCellContent: function (e) {
+            e.dayNumberText = e.dayNumberText.replace('日', '');
+        },
         selectable: true,
         select: function (info) {
             const time = prompt("希望シフト開始-終了時間を入力してください ex)1000-1700");
@@ -16,9 +19,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 // 登録処理の呼び出し
                 axios
                     .post("/shift/addShift/", {
-                        
+
                         date: info.start.valueOf(),
-                        time: time, 
+                        time: time,
                     })
                     .then(() => {
                         // イベントの追加
@@ -53,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     successCallback(response.data);
                 })
                 .catch(() => {
-                     バリデーションエラーなど
+                    バリデーションエラーなど
                     alert("登録に失敗しました");
                 });
         },
