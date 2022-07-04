@@ -12,11 +12,12 @@ from django.views.generic import(
     UpdateView,
     DetailView,
 )
-from django.http import Http404,HttpResponse,JsonResponse
+from django.http import Http404,HttpResponse,JsonResponse,HttpResponseRedirect
 import time,json
 from .forms import CalendarForm,ShiftForm,ConfirmForm
 from django.middleware.csrf import get_token
 from django.template import loader
+from django.urls import reverse
 
 # Create your views here.
 
@@ -435,3 +436,74 @@ def shiftOthers(request):
 
     return JsonResponse(list, safe=False)
 
+#シフト承認
+def authorize(request):
+    """
+    カレンダー画面
+    """
+    get_token(request)
+    template = loader.get_template('shift/authorize.html')
+    return HttpResponse(template.render({}, request))
+
+def authorize_detail(request):
+    template = loader.get_template('shift/authorize.html')
+    d = request.POST['date_field']
+    shifts = ShiftData.objects.filter(date=d, confirmed_flag=0)
+    shift_list = []
+    for shift in shifts:
+        start_time = str(shift.start_time//100).zfill(2) + ":" + str(shift.start_time%100).zfill(2)
+        end_time = str(shift.end_time//100).zfill(2) + ":" + str(shift.end_time%100).zfill(2)
+        shift_list.append(
+            {
+                "id": shift.id,
+                "user_id": shift.user_id,
+                "date": shift.date,
+                "start_time": start_time,
+                "end_time": end_time,
+            }
+        )
+    context = {
+        'shift_list': shift_list,
+        'authorize_text':"未承認のシフトはありません"
+    }
+    return HttpResponse(template.render(context, request))
+
+def authorizeShift(request, id):
+    shift = ShiftData.objects.get(id=id)
+    shift.confirmed_flag=1
+    shift.save()
+    return HttpResponseRedirect(reverse('shift:authorize'))
+def delete(request):
+    template = loader.get_template('shift/delete.html')
+    return HttpResponse(template.render({}, request))
+
+def delete_detail(request):
+    template = loader.get_template('shift/delete.html')
+    d = request.POST['date_field']
+    user = request.user.id
+    shifts = ShiftData.objects.filter(user_id=user, date=d)
+    shift_list = []
+    for shift in shifts:
+        start_time = str(shift.start_time//100).zfill(2) + ":" + str(shift.start_time%100).zfill(2)
+        end_time = str(shift.end_time//100).zfill(2) + ":" + str(shift.end_time%100).zfill(2)
+        if shift.confirmed_flag == 0: confirmed_flag = "未承認"
+        else: confirmed_flag = "承認済"
+        shift_list.append(
+            {
+                "id": shift.id,
+                "date": shift.date,
+                "start_time": start_time,
+                "end_time": end_time,
+                "confirmed_flag": confirmed_flag,
+            }
+        )
+    context = {
+        'shift_list': shift_list,
+        'delete_text':"シフトはありません"
+    }
+    return HttpResponse(template.render(context, request))
+
+def deleteShift(request, id):
+    shift = ShiftData.objects.get(id=id)
+    shift.delete()
+    return HttpResponseRedirect(reverse('shift:delete'))
