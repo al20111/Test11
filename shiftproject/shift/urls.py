@@ -22,4 +22,10 @@ urlpatterns=[
     path('confirmShiftAuthor/',views.confirmShiftAuthor,name='confirmShiftAuthor'),
     path('ShiftMine/',views.shiftMine,name='shiftMine'),
     path('ShiftOthers/',views.shiftOthers,name='shiftOthers'),
+    path('authorize/',views.authorize,name='authorize'),
+    path('authorize_detail/', views.authorize_detail, name='authorize_detail'),
+    path('authorizeShift/<int:id>', views.authorizeShift, name='authorizeShift'),
+    path('delete/',views.delete,name='delete'),
+    path('delete_detail/', views.delete_detail, name='delete_detail'),
+    path('deleteShift/<int:id>', views.deleteShift, name='deleteShift'),
 ]
