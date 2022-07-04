@@ -59,7 +59,7 @@
         $.ajax({
             type: 'POST',
             url: '/message/update_history/{{dest_name}}/',
-            data: {},
+            data: {'POST_flag':true},
             dataType: 'json',
         }).done(response => {
             var jsonObjects = JSON.parse(response.content);
