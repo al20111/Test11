@@ -2,7 +2,23 @@
 {% block title %}意見箱{% endblock %}
 {% block h1 %}意見箱{% endblock %}
 {% block content %}
-{% for item in object_list %}
-<p>{{item.text}}</p>
-{% endfor %}
+<div class="container-opinion">
+    {% for item in object_list %}
+    <p>{{item.text}}</p>
+    {% endfor %}
+</div>
+<style>
+    .container-opinion {
+        width: 70%;
+        height: 500px;
+        margin: 0 auto;
+        border: 5px solid;
+        border-radius: 10px;
+    }
+
+    .container-opinion p {
+        font-size: 35px;
+        margin-left: 20px;
+    }
+</style>
 {% endblock content %}
