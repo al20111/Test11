@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}掲示板{% endblock %}
+{% block h1 %}掲示板{% endblock %}
+{% block content %}
+<form method='POST'>{% csrf_token %}
+    {{ form.text|add_class:'form-board'}}
+    <button type='submit'>確定</button>
+</form>
+{% endblock content %}
