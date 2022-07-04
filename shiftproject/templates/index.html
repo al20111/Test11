@@ -5,10 +5,10 @@
 {% block content %}
 <div>
     {% if request.user.is_staff %}
-    <a href="{% url 'shift:confirm_author' %}">シフト閲覧</a>
-    <a href="{% url 'shift:authorize' %}">シフト承認</a>
+    <a href="{% url 'shift:confirm_author' %}" class="btn confirm-author">シフト閲覧</a>
+    <a href="{% url 'shift:authorize' %}" class="btn authorize">シフト承認</a>
     {% else %}
-    <a href="{% url 'shift:edit' %}" class="btn editing">シフト編集<p><i class="fa-solid fa-file"></i></p></a>
+    <a href=" {% url 'shift:edit' %}" class="btn editing">シフト編集<p><i class="fa-solid fa-file"></i></p></a>
     <a href="{% url 'shift:confirm' %}" class="btn confirming">シフト閲覧<p><i class="fa-solid fa-display"></i></p></a>
     {% endif %}
 
@@ -35,7 +35,18 @@
         background-color: #1f6fd8;
         position: absolute;
         left: 150px;
+    }
 
+    .confirm-author {
+        background-color: #1f6fd8;
+        position: absolute;
+        left: 150px;
+    }
+
+    .authorize {
+        background-color: #1f6fd8;
+        position: absolute;
+        right: 150px;
     }
 
     .confirming {

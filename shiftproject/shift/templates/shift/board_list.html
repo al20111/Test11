@@ -6,8 +6,9 @@
 {% for item in object_list %}
 {% if request.user.is_staff %}
 <a href="{% url 'shift:board-edit' item.pk %}" class="btn board-edit">掲示板編集</a>
-{% endif %}
+{% else %}
 <a href="{% url 'shift:board-detail' item.pk%}" class="btn board-confirm">掲示板確認</a>
+{% endif %}
 {% endfor %}
 {% if request.user.is_staff %}
 <a href="{% url 'shift:opinion-list' %}" class="btn opinion-box">意見箱</a>
@@ -36,6 +37,7 @@
     .board-edit {
         background-color: #1f6fd8;
         position: absolute;
+        left: 150px;
     }
 
     .board-confirm {
@@ -45,7 +47,7 @@
     }
 
 
-    .opinion-edit {
+    .opinion-box {
         background-color: #1f6fd8;
         position: absolute;
         right: 150px;
