@@ -59,25 +59,23 @@
         $.ajax({
             url: '/message/update_history/{{dest_name}}/',
             type: 'GET',
-            data: null,
-            processData: false,
-            contentType: false,
-            dataType: 'json'
-        }).done(response => {
-            if (response.flag) {
-                var jsonObjects = JSON.parse(response.content);
-                $.each(jsonObjects, function (index, jsonObject) {
-                    $("#content_area").append(
-                        '<div class="opponent_message">' +
-                        '<p>' + jsonObject.dest_name + '</p>' +
-                        '<p>' + jsonObject.messages + '</p>' +
-                        '<p>' + jsonObject.send_time + '</p>' +
-                        '</div>'
-                    );
-                })
-                /*var element = document.documentElement;
-                var bottom = element.scrollHeight - element.clientHeight;
-                window.scroll(0, bottom);*/
+            dataType: 'json',
+            success : function(data){
+                if (data.flag) {
+                    var jsonObjects = JSON.parse(data.content);
+                    $.each(jsonObjects, function (index, jsonObject) {
+                        $("#content_area").append(
+                            '<div class="opponent_message">' +
+                            '<p>' + jsonObject.dest_name + '</p>' +
+                            '<p>' + jsonObject.messages + '</p>' +
+                            '<p>' + jsonObject.send_time + '</p>' +
+                            '</div>'
+                        );
+                    })
+                    /*var element = document.documentElement;
+                    var bottom = element.scrollHeight - element.clientHeight;
+                    window.scroll(0, bottom);*/
+                }
             }
         });
         setTimeout(callAjax, interval);  //callAjax() par 1000ms = 1s
