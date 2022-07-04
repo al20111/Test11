@@ -64,6 +64,7 @@
         }).done(response => {
             var jsonObjects = JSON.parse(response.content);
             if (response.flag) {
+                console.log('success');
                 $.each(jsonObjects, function (index, jsonObject) {
                     $("#content_area").append(
                         '<div class="opponent_message">' +
@@ -76,6 +77,8 @@
                 var element = document.documentElement;
                 var bottom = element.scrollHeight - element.clientHeight;
                 window.scroll(0, bottom);
+            }else{
+                console.log('no changes');
             }
         });
         setTimeout(callAjax, interval);  //callAjax() par 1000ms = 1s
