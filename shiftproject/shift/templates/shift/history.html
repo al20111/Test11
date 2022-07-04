@@ -1,0 +1,144 @@
+{% extends 'base.html' %}
+{% block title %}メッセージ送信{% endblock %}
+{% block h1 %}メッセージ送信{% endblock %}
+{% block content %}
+<!--head>
+    <link href="style.css" rel="stylesheet" type="text/css">
+</head-->
+<div class="outer-content">
+    <div class="inner-content">
+        {% if messages %}
+        {% for message in messages %}
+        {% if message.indivisual_ID == user_id.id %}
+        <!-- css適用するとき用 -->
+        <!-- 自分の吹き出し -->
+        <div class="message__right">
+            <div class="message-right-name">{{user_id.username}}</div>
+            <div class="message-right-text">{{message.message}}</div>
+            <div class="message-right-date">
+                {% if message.read_status == 1 %}
+                <p style="text-align:right" class="date">既読 {{message.send_time}}</p>
+                {% else %}
+                <p style="text-align:right" class="date">{{message.send_time}}</p>
+                {% endif %}
+            </div>
+        </div>
+
+        {% else %}
+        <!-- css適用するとき用 -->
+        <!-- 相手の吹き出し -->
+        <div class="message__left">
+            <div class="message-left-name">{{dest_name}}</div>
+            <div class="message-left-text">{{message.message}}</div>
+            <span class="message-left-date">{{message.send_time}}</span>
+        </div>
+        {% endif %}
+        {% endfor %}
+        {% endif %}
+
+        <div class="form">
+            <form method="post">
+                {% csrf_token %}
+
+                <div class="message-input">{{ form.as_table }}</div>
+                <button type="submit" class="btn-message-send">送信</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        height: 200%;
+    }
+
+    .outer-content {
+        height: 200%;
+    }
+
+    .inner-content {
+        font-size: 35px;
+        border: 5px solid;
+        width: 70%;
+        margin: 0 auto 20px auto;
+        height: 70%;
+        border-radius: 10px;
+    }
+
+    .btn-message-send {
+        position: absolute;
+        float: right;
+        right: 100px;
+        bottom: 4px;
+        font-size: 20px;
+    }
+
+    .btn-message-send:hover {
+        background-color: aqua;
+    }
+
+
+    .message-input {
+        margin-left: 50%;
+        font-size: 40px;
+    }
+
+
+
+    .form {
+        border-top: 2px solid;
+        position: relative;
+    }
+
+    p {
+        margin: 5px 0;
+    }
+
+    .message-right-name {
+        text-align: right;
+    }
+
+    .message-right-text {
+        text-align: left;
+        padding-left: 30px;
+        margin-right: 10px;
+        margin-left: auto;
+        height: auto;
+        background-color: rgba(17, 245, 93, 0.85);
+        width: 60%;
+        border: 1px solid;
+        border-radius: 5px;
+    }
+
+    .message-right-date {
+        font-size: 25px;
+    }
+
+    .message-left-name {
+        margin-left: 10px;
+    }
+
+    .message-left-text {
+        text-align: left;
+        padding-left: 30px;
+        margin-left: 10px;
+        margin-right: auto;
+        height: auto;
+        background-color: rgba(17, 245, 93, 0.85);
+        width: 60%;
+        border: 1px solid;
+        border-radius: 5px;
+    }
+
+    .message-left-date {
+        font-size: 25px;
+        margin-left: 10px;
+    }
+
+    .message-input input {
+        font-size: 25px;
+        width: 50%;
+
+    }
+</style>
+{% endblock content %}
