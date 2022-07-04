@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}店舗選択|シフト{% endblock %}
+{% block h1 %}店舗選択{% endblock %}
+{% block content %}
+<div>
+    <p>店舗を選択してください</p>
+    <form method='POST'>{% csrf_token %}
+        <div class="select-store">
+            {{form.as_p}}
+        </div>
+        <input type='submit' Value='確定'>
+    </form>
+</div>
+
+<style>
+    p {
+        text-align: center;
+        font-size: large;
+    }
+
+    .select-store p {
+        font-size: 30px;
+    }
+
+    .select-store {
+        text-align: center;
+        /* font-size: 50px; */
+    }
+
+    select {
+        margin-top: 50px;
+        font-size: 30px;
+    }
+
+    input {
+        display: block;
+        width: 150px;
+        height: 70px;
+        font-size: 45px;
+        margin: 100px auto;
+        background: linear-gradient(135deg, #ffd900, #ff9300);
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: 0.3s;
+        border: 2px solid #ff9300;
+        background: #fff;
+        color: #ff9300;
+    }
+
+    input:hover {
+        background: #ff9300;
+        color: #fff;
+    }
+
+    input:active,
+    input:focus {
+        top: 2px;
+    }
+</style>
+{% endblock content %}

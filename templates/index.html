@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}メニュー{% endblock %}
+{% block h1 %}メニュー{% endblock %}
+{% block content %}
+<div>
+    {% if request.user.is_staff %}
+    <a href="{% url 'shift:' %}" class="btn board">シフト承認</a>
+    {% else %}
+    <a href="{% url 'shift:edit' %}" class="btn editing">シフト編集<p><i class="fa-solid fa-file"></i></p></a>
+    {% endif %}
+    <a href="{% url 'shift:confirm' %}" class="btn confirming">シフト閲覧<p><i class="fa-solid fa-display"></i></p></a>
+    <a href="{% url 'shift:send' %}" class="btn message">メッセージ送信<p><i class="fa-solid fa-message"></i></p></a>
+    <a href="{% url 'shift:OB' %}" class="btn board">掲示板・意見箱<p><i class="fa-solid fa-chalkboard-user"></i></p></a>
+
+</div>
+
+<style>
+    .btn {
+        font-size: 40px;
+        margin: 10px 10px;
+        padding: 70px 50px;
+        color: white;
+        display: inline-block;
+        opacity: 0.8;
+        border-radius: 40px;
+        width: 30%;
+        height: 120px;
+        text-align: center;
+    }
+
+    .editing {
+        background-color: #1f6fd8;
+        position: absolute;
+        left: 150px;
+
+    }
+
+    .confirming {
+        background-color: #1f6fd8;
+        position: absolute;
+        right: 150px;
+    }
+
+    .message {
+        background-color: #1f6fd8;
+        position: absolute;
+        left: 150px;
+        bottom: 100px;
+    }
+
+    .board {
+        background-color: #1f6fd8;
+        position: absolute;
+        right: 150px;
+        bottom: 100px;
+    }
+
+    .btn p {
+        color: white;
+        font-size: 40px;
+        z-index: 2;
+    }
+
+    .btn:hover {
+        opacity: 1.0;
+        box-shadow: none;
+        transform: translateY(5px);
+    }
+
+    .fa-calendar-lines-pen {
+        color: white;
+    }
+</style>
+
+{% endblock content %}
