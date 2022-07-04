@@ -57,13 +57,15 @@
     var interval = 1000;
     function callAjax() {
         $.ajax({
-            type: 'POST',
             url: '/message/update_history/{{dest_name}}/',
-            data: {'POST_flag':true},
-            dataType: 'json',
+            type: 'GET',
+            data: null,
+            processData: false,
+            contentType: false,
+            dataType: 'json'
         }).done(response => {
-            var jsonObjects = JSON.parse(response.content);
             if (response.flag) {
+                var jsonObjects = JSON.parse(response.content);
                 $.each(jsonObjects, function (index, jsonObject) {
                     $("#content_area").append(
                         '<div class="opponent_message">' +
@@ -73,9 +75,9 @@
                         '</div>'
                     );
                 })
-                var element = document.documentElement;
+                /*var element = document.documentElement;
                 var bottom = element.scrollHeight - element.clientHeight;
-                window.scroll(0, bottom);
+                window.scroll(0, bottom);*/
             }
         });
         setTimeout(callAjax, interval);  //callAjax() par 1000ms = 1s
