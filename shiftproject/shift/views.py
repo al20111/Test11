@@ -480,7 +480,7 @@ def delete(request):
 def delete_detail(request):
     template = loader.get_template('shift/delete.html')
     d = request.POST['date_field']
-    user = request.user.id
+    user = request.user
     shifts = ShiftData.objects.filter(user_id=user, date=d)
     shift_list = []
     for shift in shifts:
