@@ -10,77 +10,76 @@
 
     {{ form.as_table }}
     <button id="submit" type="submit">送信</butto>
-    </form>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-    <script src="{% static 'message/js/ajax.js' %}"></script>
-    <script type="text/javascript">
-        window.addEventListener("load" , function (){
-            $("#submit").on("click", function(){ submit(); });
+</form>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="{% static 'message/js/ajax.js' %}"></script>
+<script type="text/javascript">
+    window.addEventListener("load", function () {
+        $("#submit").on("click", function () { submit(); });
+    });
+
+    function submit() {
+
+        let form_elem = "#form_area";
+
+        let data = new FormData($(form_elem).get(0));
+        let url = '/message/send_message/{{dest_name}}/';
+        let method = $(form_elem).prop("method");
+
+        $.ajax({
+            url: url,
+            type: method,
+            data: data,
+            processData: false,
+            contentType: false,
+            dataType: 'json'
+        }).done(response => {
+
+            if (response.error) {
+                console.log("ERROR");
+            }
+            else {
+                var jsonObjects = JSON.parse(response);
+                $("#content_area").append(
+                    '<div class="my_message">' +
+                    '<p style="text-align:right">' + jsonObjects.username + '</p>' +
+                    '<p style="text-align:right">' + jsonObjects.messages + '</p>' +
+                    '<p style="text-align:right">' + jsonObjects.send_time + '</p>' +
+                    '</div>'
+                )
+                //$("#textarea").val("");
+            }
         });
-
-        function submit(){
-
-            let form_elem   = "#form_area";
-
-            let data    = new FormData( $(form_elem).get(0) );
-            let url     = '/message/send_message/{{dest_name}}/';
-            let method  = $(form_elem).prop("method");
-
-            $.ajax({
-                url: url,
-                type: method,
-                data: data,
-                processData: false,
-                contentType: false,
-                dataType: 'json'
-            }).done( response => { 
-
-                if (response.error){
-                    console.log("ERROR");
-                }
-                else{
-                    var jsonObjects = JSON.parse(response);
+        var element = document.documentElement;
+        var bottom = element.scrollHeight - element.clientHeight;
+        window.scroll(0, bottom);
+    }
+    var interval = 1000;
+    function callAjax() {
+        $.ajax({
+            type: 'GET',
+            url: '/message/update_history/{{dest_name}}/',
+            data: {},
+            dataType: 'json',
+        }).done(response => {
+            var jsonObjects = JSON.parse(response.content);
+            if (response.flag) {
+                $.each(jsonObjects, function (index, jsonObject) {
                     $("#content_area").append(
-                        '<div class="my_message">'+
-                        '<p style="text-align:right">'+jsonObjects.username+'</p>'+
-                        '<p style="text-align:right">'+jsonObjects.messages+'</p>'+
-                        '<p style="text-align:right">'+jsonObjects.send_time+'</p>'+
+                        '<div class="opponent_message">' +
+                        '<p>' + jsonObject.dest_name + '</p>' +
+                        '<p>' + jsonObject.messages + '</p>' +
+                        '<p>' + jsonObject.send_time + '</p>' +
                         '</div>'
-                    )
-                    //$("#textarea").val("");
-                }
-            });
-            var element = document.documentElement;
-            var bottom = element.scrollHeight - element.clientHeight;
-            window.scroll(0, bottom);
-        }
-        var interval = 1000;
-        function callAjax() {
-            $.ajax({
-                type: 'GET',
-                url: '/message/update_history/{{dest_name}}/',
-                data: {},
-                dataType: 'json',
-                success: response => {
-                    var jsonObjects = JSON.parse(response.content);
-                    if(response.flag){
-                        $.each(jsonObjects, function (index, jsonObject) {
-                            $("#content_area").append(
-                                '<div class="opponent_message">'+
-                                '<p>'+jsonObject.dest_name+'</p>'+
-                                '<p>'+jsonObject.messages+'</p>'+
-                                '<p>'+jsonObject.send_time+'</p>'+
-                                '</div>'
-                            );
-                        })
-                        var element = document.documentElement;
-                        var bottom = element.scrollHeight - element.clientHeight;
-                        window.scroll(0, bottom);
-                    }
-                }
-            });
-            setTimeout(callAjax, interval);  //callAjax() par 1000ms = 1s
-        };
-        callAjax();
-    </script>
+                    );
+                })
+                var element = document.documentElement;
+                var bottom = element.scrollHeight - element.clientHeight;
+                window.scroll(0, bottom);
+            }
+        });
+        setTimeout(callAjax, interval);  //callAjax() par 1000ms = 1s
+    };
+    callAjax();
+</script>
 {% endblock content %}
