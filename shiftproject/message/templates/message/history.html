@@ -62,9 +62,9 @@
                 data: {},
                 dataType: 'json',
                 success: response => {
-                    var jsonObjects = JSON.parse(response);
-                    if(jsonObjects.flag == '1'){
-                        $.each(jsonObjects.content, function (index, jsonObject) {
+                    var jsonObjects = JSON.parse(response.content);
+                    if(response.flag){
+                        $.each(jsonObjects, function (index, jsonObject) {
                             $("#content_area").append(
                                 '<div class="opponent_message">'+
                                 '<p>'+jsonObject.dest_name+'</p>'+
