@@ -15,8 +15,11 @@ urlpatterns=[
     path('history/<slug:dest_id>/', views.GetMessageHistory, name='history'),
     path('edit/',views.edit,name='edit'),
     path('confirm/',views.confirm,name='confirm'),
+    path('confirm_author/',views.confirm_author,name='confirm_author'),
     path('addShift/',views.add_shift,name='add_shift'),
     path('listShift/',views.get_shift,name='get_shift'),
     path('confirmShift/',views.confirmShift,name='confirmShift'),
+    path('confirmShiftAuthor/',views.confirmShiftAuthor,name='confirmShiftAuthor'),
     path('ShiftMine/',views.shiftMine,name='shiftMine'),
+    path('ShiftOthers/',views.shiftOthers,name='shiftOthers'),
 ]

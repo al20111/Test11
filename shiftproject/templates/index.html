@@ -5,12 +5,14 @@
 {% block content %}
     <div>
         {% if request.user.is_staff %}
+        <a href="{% url 'shift:confirm_author' %}">シフト閲覧</a>
+
         {% else %}
+        <a href="{% url 'shift:edit' %}">シフト編集</a>
+        <a href="{% url 'shift:confirm' %}">シフト確認</a>
         {% endif %}
         <a href="{% url 'shift:send' %}">メッセージ送信</a>
         <a href="{% url 'shift:OB' %}">掲示板・意見箱</a>
-        <a href="{% url 'shift:edit'%}">シフト編集</a>
-        <a href="{% url 'shift:confirm'%}">シフト確認</a>
         
     </div>
 {% endblock content %}
