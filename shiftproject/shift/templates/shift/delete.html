@@ -14,7 +14,6 @@
     document.getElementById("today").value = yyyy + '-' + mm + '-' + dd;
   }
 </script>
-</html>
 
 <form action="{% url 'shift:delete_detail' %}" method="post">
   {% csrf_token %}
