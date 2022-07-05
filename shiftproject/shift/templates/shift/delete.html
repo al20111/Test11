@@ -3,9 +3,22 @@
 {% block title %}シフト削除{% endblock %}
 {% block h1 %}シフト削除{% endblock %}
 {% block content %}
+
+<script type="text/javascript">
+  window.onload = function () {
+    var today = new Date();
+    today.setDate(today.getDate());
+    var yyyy = today.getFullYear();
+    var mm = ("0" + (today.getMonth() + 1)).slice(-2);
+    var dd = ("0" + today.getDate()).slice(-2);
+    document.getElementById("today").value = yyyy + '-' + mm + '-' + dd;
+  }
+</script>
+</html>
+
 <form action="{% url 'shift:delete_detail' %}" method="post">
   {% csrf_token %}
-  <input type="date" name="date_field" required="required">
+  <input type="date" id="today" name="date_field">
   <input type="submit" value="Search">
 </form>
 
