@@ -3,8 +3,9 @@
 {% block title %}店舗選択|シフト{% endblock %}
 {% block h1 %}店舗選択{% endblock %}
 {% block content %}
-<div>
-    <p>店舗を選択してください</p>
+<div class="container">
+    <p>新規登録した方は、勤務している店舗を選択してください。</p>
+    <p>ログイン済みの方は、<a href="{% url 'index' %}">メニュー画面</a>にお進みください。</p>
     <form method='POST'>{% csrf_token %}
         <div class="select-store">
             {{form.as_p}}
@@ -14,9 +15,25 @@
 </div>
 
 <style>
-    p {
+    .select-store-title {
+        top: 20%;
+    }
+
+    .container {
+        border: 5px solid #ff9300;
+        width: 50%;
+        margin: 5% auto 20% auto;
+        border-radius: 10px;
+    }
+
+    .container a {
+        color: blue;
+    }
+
+    .container p {
         text-align: center;
-        font-size: large;
+        font-size: 20px;
+        font-weight: bold;
     }
 
     .select-store p {
