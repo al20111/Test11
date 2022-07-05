@@ -155,6 +155,15 @@ class CreateStoreView(LoginRequiredMixin, CreateView):
     template_name = 'shift/store_create.html'
     success_url = reverse_lazy('index')
 
+    def get_template_names(self):
+
+        if Staff.objects.filter(user=self.request.user).exists():
+            template_name = 'index.html'
+        else:
+            template_name = 'shift/store_create.html'
+
+        return [template_name]
+
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
