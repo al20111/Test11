@@ -1,0 +1,115 @@
+{% load static %}
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{% block title %}{% endblock %}|シフトアプリ</title>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v6.1.1/css/all.css">
+    <script src="https://kit.fontawesome.com/5a63c6cd21.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+    <link rel="stylesheet" href="{% static 'shift/css/style.css' %}">
+    <nav class="base">
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'index' %}" class="base-back">メニュー</a>
+        <div class="Welcome-message">ようこそ、{{request.user.username}}さん！</div>
+        {% endif %}
+        {% if request.user.is_authenticated %}
+        <a href="{% url 'accounts:logout' %}" class="base-logout">ログアウト</a>
+        {% else %}
+        <a href="{% url 'accounts:login' %}" class="base-login">ログイン</a>
+        <a href="{% url 'accounts:signup' %}" class="base-register">会員登録</a>
+        <div class="guest-message">ようこそ、ゲストさん！</div>
+        {% endif %}
+    </nav>
+    <div>
+        <h1><span class="high-light">{% block h1 %}{% endblock %}</span></h1>
+        {% block content %}{% endblock content %}
+    </div>
+</body>
+<style>
+    h1 {
+        text-align: center;
+        font-size: 60px;
+    }
+
+    .high-light {
+        background: linear-gradient(transparent 50%, #ffff66 0%);
+        line-height: 1.3em;
+    }
+
+
+
+    body {
+        margin: 0;
+        font-family: "Helvetica Neue";
+        /* font-family: "Hiragino Kaku Gothic ProN";  */
+        background-color: #ffffff;
+        background-size: cover;
+
+    }
+
+    .base {
+        background-color: rgb(203, 203, 218);
+        height: 70px;
+        width: auto;
+        padding: 30px 20px 10px 20px;
+        border-bottom: 3px solid black;
+    }
+
+
+
+    .base a {
+        color: black;
+        font-weight: bold;
+        font-size: 35px;
+        margin: 0 20px;
+        width: 100px;
+        height: 100px;
+        background-color: rgba(94, 94, 253, 0.3);
+        border-radius: 10px;
+    }
+
+    .base-back,
+    .base-login,
+    .base-logout,
+    .base-register {
+        width: auto;
+        background-color: azure;
+        padding: 10px 20px;
+    }
+
+    .base-back:hover,
+    .base-login:hover,
+    .base-logout:hover,
+    .base-register:hover {
+        background-color: rgba(94, 94, 253, 0.8);
+        box-shadow: none;
+        transform: translateY(10px);
+    }
+
+    .Welcome-message {
+        position: absolute;
+        right: 20px;
+        text-align: center;
+        display: inline;
+        font-size: 35px;
+        font-weight: bold;
+    }
+
+    .guest-message {
+        position: absolute;
+        right: 20px;
+        text-align: center;
+        display: inline;
+        font-size: 35px;
+        font-weight: bold;
+    }
+</style>
+
+
+
+</html>
