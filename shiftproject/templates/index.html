@@ -3,23 +3,60 @@
 {% block title %}メニュー{% endblock %}
 {% block h1 %}メニュー{% endblock %}
 {% block content %}
+{% if request.user.is_authenticated %}
+{% else %}
+<div class="ifguest">ログインまたは会員登録<i class="fa-solid fa-angles-up"></i></div>
+{% endif %}
 <div>
     {% if request.user.is_staff %}
-    <a href="{% url 'shift:confirm_author' %}" class="btn confirm-author">シフト閲覧</a>
-    <a href="{% url 'shift:authorize' %}" class="btn authorize">シフト承認</a>
+    <a href="{% url 'shift:confirm_author' %}" class="btn confirm-author">シフト閲覧
+        <p class="exp">各従業員から提出されたシフトを確認することができます。</p>
+    </a>
+    <a href="{% url 'shift:authorize' %}" class="btn authorize">シフト承認
+        <p class="exp">各従業員から提出されたシフトの承認をすることができます。</p>
+    </a>
     {% else %}
-    <a href=" {% url 'shift:edit' %}" class="btn editing">シフト編集<p><i class="fa-solid fa-file"></i></p></a>
-    <a href="{% url 'shift:confirm' %}" class="btn confirming">シフト閲覧<p><i class="fa-solid fa-display"></i></p></a>
+    <a href=" {% url 'shift:edit' %}" class="btn editing">シフト編集<i class="fa-solid fa-file"></i>
+        <p class="exp">シフトの編集を行うことができます。</p>
+    </a>
+    <a href="{% url 'shift:confirm' %}" class="btn confirming">シフト閲覧<i class="fa-solid fa-display"></i>
+        <p class="exp">承認されたシフトの閲覧を行うことができます。</p>
+    </a>
     {% endif %}
 
-    <a href="{% url 'shift:send' %}" class="btn message">メッセージ送信<p><i class="fa-solid fa-message"></i></p></a>
-    <a href="{% url 'shift:OB' %}" class="btn board">掲示板・意見箱<p><i class="fa-solid fa-chalkboard-user"></i></p></a>
+    <a href="{% url 'shift:send' %}" class="btn message">メッセージ送信<i class="fa-solid fa-message"></i>
+        <p class="exp">同じ店舗で働く従業員・雇用者へ<br>メッセージを送ることができます。</p>
+    </a>
+    <a href="{% url 'shift:OB' %}" class="btn board">掲示板・意見箱<i class="fa-solid fa-chalkboard-user"></i>
+        {% if request.user.is_staff %}
+        <p class="exp">掲示板の編集や、意見箱の確認を行うことができます。</p>
+        {% else %}
+        <p class="exp">店舗からの連絡の確認や、意見箱への投稿を行うことができます。</p>
+        {% endif %}
+    </a>
 
 </div>
 
 <style>
+    .ifguest {
+        font-size: 30px;
+        margin-top: -9%;
+        margin-left: 10px;
+        color: red;
+        font-weight: bold;
+        border: 4px solid red;
+        width: 20%;
+        background-color: white;
+    }
+
+    .fa-angles-up {
+        margin-left: 20px;
+    }
+
+
     .btn {
         font-size: 40px;
+
         margin: 10px 10px;
         padding: 70px 50px;
         color: white;
@@ -31,15 +68,24 @@
         text-align: center;
     }
 
+    .btn i {
+        margin-left: 20px;
+        color: white;
+        font-size: 40px;
+        z-index: 2;
+    }
+
     .editing {
         background-color: #1f6fd8;
         position: absolute;
+        top: 250px;
         left: 150px;
     }
 
     .confirm-author {
         background-color: #1f6fd8;
         position: absolute;
+        top: 250px;
         left: 150px;
     }
 
@@ -52,6 +98,7 @@
     .confirming {
         background-color: #1f6fd8;
         position: absolute;
+        top: 250px;
         right: 150px;
     }
 
@@ -59,30 +106,29 @@
         background-color: #1f6fd8;
         position: absolute;
         left: 150px;
-        bottom: 100px;
+        bottom: 50px;
     }
 
     .board {
         background-color: #1f6fd8;
         position: absolute;
         right: 150px;
-        bottom: 100px;
+        bottom: 50px;
     }
 
-    .btn p {
-        color: white;
-        font-size: 40px;
+    .exp {
+        color: rgb(0, 0, 0);
+        font-size: 20px;
         z-index: 2;
+        text-decoration: underline black;
+        text-decoration-thickness: 4px;
+        font-weight: normal;
     }
 
     .btn:hover {
         opacity: 1.0;
         box-shadow: none;
         transform: translateY(5px);
-    }
-
-    .fa-calendar-lines-pen {
-        color: white;
     }
 </style>
 

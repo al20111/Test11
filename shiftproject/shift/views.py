@@ -371,10 +371,6 @@ def confirmShiftAuthor(request):
     return JsonResponse(list, safe=False)
 
 
-# def isleapyear(year):
-    # return year % 4 == 0 and (year % 100 != 0 or year % 400 == 0)
-
-
 def shiftMine(request):
     if request.method == "GET":
         # GETは対応しない
@@ -404,13 +400,16 @@ def shiftMine(request):
     )
 
     # 給料計算
-
+    month = int(month)
     s = str(year) + " " + str(month) + " 01"
 
     if month == 2:
-        e = str(year) + " " + str(month) + " 28"
+        if(isleap(int(year))):
+            e = str(year) + " " + str(month) + " 29"
+        else:
+            e = str(year) + " " + str(month) + " 28"
 
-    elif(month == 4, month == 6, month == 9, month == 11):
+    elif(month == 4 or month == 6 or month == 9 or month == 11):
         e = str(year) + " " + str(month) + " 30"
     else:
         e = str(year) + " " + str(month) + " 31"
@@ -423,7 +422,7 @@ def shiftMine(request):
         "%Y-%m-%d", month_end)
 
     moneyShift = ShiftData.objects.filter(
-        user_id=request.user, date__lt=month_end, date__gt=month_start, confirmed_flag=1,
+        user_id=request.user, date__lte=month_end, date__gte=month_start, confirmed_flag=1,
     )
     store = Staff.objects.get(user=request.user,)
     permoney = Store.objects.get(name=store.store)

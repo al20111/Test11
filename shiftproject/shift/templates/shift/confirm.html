@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block title %}閲覧{% endblock %}
-{% block h1 %}<div class="confirm-title">閲覧</div>{% endblock %}
+{% block h1 %}<div class="confirm-title">シフト閲覧</div>{% endblock %}
 {% block content %}
+
+
+
 
 <head>
 
@@ -106,7 +109,7 @@
                 <div class="timetable"></div>
             </div>
             <div class="expected-salary-container">
-                <span class="expected-salary-title">予想給料</span>
+                <span class="expected-salary-title">予想給料{{request.user.username}}</span>
                 <div class="money" id="money"></div>
 
             </div>
