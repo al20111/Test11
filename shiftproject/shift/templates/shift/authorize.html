@@ -3,22 +3,30 @@
 {% block title %}シフト承認{% endblock %}
 {% block h1 %}シフト承認{% endblock %}
 {% block content %}
-<div class="container">
-  <form action="{% url 'shift:authorize_detail' %}" method="post">
-    {% csrf_token %}
-    <div class="info">
-      <div class="input-message">日付を入力してください</div>
-      <input type="date" name="date_field" required="required" class="shift-calendar">
-      <input type="submit" value="Search" class="search-btn">
-    </div>
-  </form>
 
+<script type="text/javascript">
+  window.onload = function () {
+    var today = new Date();
+    today.setDate(today.getDate());
+    var yyyy = today.getFullYear();
+    var mm = ("0" + (today.getMonth() + 1)).slice(-2);
+    var dd = ("0" + today.getDate()).slice(-2);
+    document.getElementById("today").value = yyyy + '-' + mm + '-' + dd;
+  }
+</script>
 
-  <br>
-  {% if shift_list %}
+<form action="{% url 'shift:authorize_detail' %}" method="post">
+  {% csrf_token %}
+  <input type="date" id="today" name="date_field">
+  <input type="submit" value="Search">
+</form>
+
+<br>
+
+{% if shift_list %}
   <table border="1">
     {% for shift in shift_list %}
-    <tr class="shift-table">
+    <tr>
       <td>{{ shift.user_id }}</td>
       <td>{{ shift.date }}</td>
       <td>{{ shift.start_time }}</td>
@@ -27,86 +35,8 @@
     </tr>
     {% endfor %}
   </table>
-  {% else %}
-  {{ authorize_text }}
-      {% endif %}
-</div>
+{% else %}
+{{ authorize_text }}
+{% endif %}
 
-<style>
-  .input-message {
-    font-size: 35px;
-    text-decoration: underline;
-    text-decoration-color: yellow;
-    text-decoration-thickness: 5px;
-  }
-
-  .info {
-    display: flex;
-    margin: 20px 0 0 20px;
-    padding: auto 0;
-    border-bottom: 4px solid;
-  }
-
-  .container {
-    border: 5px solid;
-    width: 70%;
-    height: 500px;
-    margin: 0 auto;
-    border-radius: 10px;
-  }
-
-  .shift-table {
-    width: 100%;
-
-  }
-
-  table {
-    width: 90%;
-    font-size: 45px;
-    margin: 20px auto 0 auto;
-  }
-
-  td {
-    text-align: center;
-
-  }
-
-  tr {
-    margin-bottom: 20px;
-  }
-
-
-  form {}
-
-  .shift-calendar {
-    font-size: 50px;
-    margin-left: 20px;
-    border: 2px solid;
-    margin-bottom: 10px;
-  }
-
-  .search-btn {
-    font-size: 30px;
-    height: 50px;
-    margin-top: 10px;
-    margin-left: 30px;
-    border-radius: 10px;
-    box-shadow: 3px 3px 3px black;
-  }
-
-  .search-btn:hover {
-    background-color: rgba(10, 202, 245, 0.7);
-  }
-
-  button {
-    margin: 10px 0;
-    font-size: 30px;
-    border-radius: 10px;
-    border: 2px solid;
-  }
-
-  button:hover {
-    background-color: rgb(255, 110, 20);
-  }
-</style>
 {% endblock content %}
