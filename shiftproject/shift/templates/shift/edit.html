@@ -1,4 +1,7 @@
 {% extends 'base.html' %}
+
+
+{% block title %}編集{% endblock %}
 {% block h1 %}<div class="edit-title">シフト編集画面</div>{% endblock %}
 {% block content %}
 
@@ -10,12 +13,13 @@
             <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
             <div class="calendar" id='calendar'></div>
         </div>
-        {% load static %}
+        <!-- {% load static %} -->
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
         <script src="{% static 'shift/js/app.js' %}"></script>
         <div class="container-right">
             <ul class="attention-list">
+                <!-- request.user.is_authenticatedがFalseになってしまう -->
                 <li>日時を選択し、希望するシフトを入力してください。</li>
                 <li>希望シフト開始時間・終了時間を、<br> それぞれ<span
                         style="text-decoration: underline red;text-decoration-thickness: 3px;">4桁の整数</span>で入力してください。
@@ -32,11 +36,19 @@
                 <i class="fa-solid fa-circle-check"></i></a>
         </div>
     </div>
+
+    <div style="--date:'2022-07-20';">
+
+    </div>
 </body>
 
 
 
 <style>
+    .fc-day[data-date=var(--date)] {
+        background-color: rgba(247, 172, 32, 0.5);
+    }
+
     .outer-container {
         width: 100%;
         height: 100%;
@@ -173,4 +185,4 @@
         margin-left: 10px;
     }
 </style>
-{% endblock %}
+{% endblock content %}

@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', function () {
         dayCellContent: function (e) {
             e.dayNumberText = e.dayNumberText.replace('日', '');
         },
-
         selectable: true,
         select: function (info) {
             const time = prompt("希望シフト開始-終了時間を入力してください ex)1000-1700");

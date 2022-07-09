@@ -7,7 +7,8 @@
 <div class="container">
   <form action="{% url 'shift:delete_detail' %}" method="post">
     <div class="info">
-      {% csrf_token %} <input type="date" name="date_field" required="required" class=" shift-calendar">
+      {% csrf_token %}
+      <input type="date" name="date_field" required="required" class="shift-calendar">
       <input type="submit" value="Search" class="search-btn">
     </div>
   </form>
@@ -31,8 +32,11 @@
     {% endfor %}
   </table>
   {% else %}
-  {{ delete_text }}
+  <h2 class="delete_text">{{ delete_text }}</h2>
   {% endif %}
+
+  <a href="{% url 'shift:edit' %}" class="back-to-edit">編集画面へ戻る
+    <i class="fa-solid fa-angles-left"></i></a>
 </div>
 
 <style>
@@ -87,7 +91,10 @@
     margin-left: 20px;
     border: 2px solid;
     margin-bottom: 10px;
+    color: rgb(255, 110, 20);
   }
+
+
 
   .search-btn {
     font-size: 30px;
@@ -110,7 +117,38 @@
   }
 
   button:hover {
-    background-color: rgb(255, 110, 20);
+    background-color: rgb(255, 20, 20);
+  }
+
+  .delete_text {
+    text-align: center;
+  }
+
+
+  .back-to-edit {
+    display: block;
+    margin: 100px auto 0 auto;
+    border: 3px solid rgb(44, 224, 21);
+    border-radius: 10px;
+    width: 400px;
+    height: 50px;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 30px;
+    background-color: rgba(9, 176, 59, 0.5);
+    font-weight: bold;
+    box-shadow: 5px 5px 5px black;
+    color: rgb(0, 0, 0);
+  }
+
+  .back-to-edit:hover {
+    background-color: rgba(9, 176, 59, 1.0);
+    box-shadow: none;
+  }
+
+  .back-to-edit:active {
+    border-color: white;
+    color: white;
   }
 </style>
 {% endblock content %}

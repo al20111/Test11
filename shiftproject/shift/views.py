@@ -573,7 +573,7 @@ def delete_detail(request):
         )
     context = {
         'shift_list': shift_list,
-        'delete_text': "シフトはありません"
+        'delete_text': "選択された日付のシフトはありません．"
     }
     return HttpResponse(template.render(context, request))
 

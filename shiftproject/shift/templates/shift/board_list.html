@@ -7,13 +7,17 @@
 {% if request.user.is_staff %}
 <a href="{% url 'shift:board-edit' item.pk %}" class="btn board-edit">掲示板編集</a>
 {% else %}
-<a href="{% url 'shift:board-detail' item.pk%}" class="btn board-confirm">掲示板確認</a>
+<a href="{% url 'shift:board-detail' item.pk%}" class="btn board-confirm">掲示板確認
+    <p class="exp">店舗からの連絡を確認することができます。</p>
+</a>
 {% endif %}
 {% endfor %}
 {% if request.user.is_staff %}
 <a href="{% url 'shift:opinion-list' %}" class="btn opinion-box">意見箱</a>
 {% else %}
-<a href="{% url 'shift:opinion-create' %}" class="btn opinion-send">意見送信</a>
+<a href="{% url 'shift:opinion-create' %}" class="btn opinion-send">意見送信
+    <p class="exp">店舗の雇用者に<span style="font-weight:bold;">匿名</span>で意見を送信する事ができます。</p>
+</a>
 {% endif %}
 
 <style>
@@ -69,6 +73,16 @@
         opacity: 1.0;
         box-shadow: none;
         transform: translateY(5px);
+    }
+
+
+    .btn .exp {
+        color: rgb(0, 0, 0);
+        font-size: 20px;
+        z-index: 2;
+        text-decoration: underline black;
+        text-decoration-thickness: 4px;
+        font-weight: normal;
     }
 </style>
 {% endblock content %}
