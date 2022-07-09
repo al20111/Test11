@@ -7,6 +7,7 @@
 </head-->
 <div class="outer-content">
     <div class="inner-content">
+        <div id="message-content">
         {% if messages %}
         {% for message in messages %}
         {% if message.indivisual_ID == user_id.id %}
@@ -35,6 +36,7 @@
         {% endif %}
         {% endfor %}
         {% endif %}
+        </div>
 
         <div class="form">
             <form method="post">
@@ -46,7 +48,34 @@
         </div>
     </div>
 </div>
-
+{% load static %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script src="{% static 'shift/js/ajax.js' %}"></script>
+<script type="text/javascript">
+    //1秒ごとにメッセージ履歴が変化してないかを検知してメッセージ履歴を更新
+    var interval = 1000;
+    var unread_number;
+    function callAjax() {
+        let form_elem = "#form_area";
+        let form_data = new FormData($(form_elem).get(0));
+        $.ajax({
+            url: '/shift/update_history/',
+            type: 'GET',
+            data: {dest_name:'{{dest_name}}'},
+            dataType: 'json',
+        }).done(function (data) {
+            if (data.flag) {
+                $("#message-content").html(data.content);
+            }else if (unread_number == undefined || unread_number < data.unread_number){
+                unread_number = data.unread_number
+            }else if (unread_number > data.unread_number){
+                $("#message-content").html(data.content);
+            }
+        })
+        setTimeout(callAjax, interval);  //callAjax() par 1000ms = 1s
+    };
+    callAjax();
+</script>
 <style>
     body {
         height: 200%;
