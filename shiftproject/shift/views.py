@@ -20,6 +20,7 @@ from .forms import CalendarForm, ShiftForm, ConfirmForm
 from django.middleware.csrf import get_token
 from django.template import loader
 from django.urls import reverse
+from django.template.loader import render_to_string
 
 # Create your views here.
 
@@ -61,6 +62,19 @@ def GetDestinationInfo(request, user_id):
 def send(request):
     return redirect("shift:select", user_id=request.user)
 
+def ajax_update_history(request):
+    ind_ID = request.user.id
+    dest_name = request.GET['dest_name']
+    dest_ID = User.objects.filter(username=dest_name).values_list('id',flat=True)[0]
+    detect_flag, unread_number = Message().UpdateMessageHistory(ind_ID,dest_ID)
+    flag,messages = Message().GetMessageHistory(ind_ID,dest_ID)
+    context = {'messages':messages,'user_id':request.user,'dest_name':dest_name}
+    content = render_to_string("shift/content.html",context,request)
+    if detect_flag:
+        data = {'flag':True,'unread_number':unread_number,'content':content}
+    else:
+        data = {'flag':False,'unread_number':unread_number,'content':content}
+    return JsonResponse(data)
 
 def GetMessageHistory(request, dest_id):
     ind_ID = request.user.id

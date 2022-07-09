@@ -55,19 +55,21 @@ class Message(models.Model):
         )
         return success_flag,message_history
     
-    def UpdateMessageHistory(self,indivisual_ID,dest_ID,message):
-        success_flag = 1
-        new_message = Message(
+    def UpdateMessageHistory(self,indivisual_ID,dest_ID):
+        detect_flag = False
+        dest_unread_number = Message.objects.filter(
+            indivisual_ID = dest_ID,
+            dest_ID = indivisual_ID,
+            read_status = 0
+        ).count()
+        my_unread_number = Message.objects.filter(
             indivisual_ID = indivisual_ID,
             dest_ID = dest_ID,
-            message = message,
             read_status = 0
-        )
-        new_message.save(force_insert=True)
-        message_history = Message.objects.filter(
-            Message(indivisual_ID = indivisual_ID) | Message(indivisual_ID = dest_ID)
-        )
-        return success_flag,message_history
+        ).count()
+        if not dest_unread_number == 0:
+            detect_flag = True
+        return detect_flag,my_unread_number
 
 class Board(models.Model):
     store=models.OneToOneField('Store',verbose_name='店舗',on_delete=models.CASCADE)
