@@ -1,0 +1,188 @@
+{% extends 'base.html' %}
+
+
+{% block title %}編集{% endblock %}
+{% block h1 %}<div class="edit-title">シフト編集画面</div>{% endblock %}
+{% block content %}
+
+
+<body>
+    <div class="outer-cotainer">
+        <div class="container-left">
+            <meta charset='utf-8' />
+            <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
+            <div class="calendar" id='calendar'></div>
+        </div>
+        <!-- {% load static %} -->
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+        <script src="{% static 'shift/js/app.js' %}"></script>
+        <div class="container-right">
+            <ul class="attention-list">
+                <!-- request.user.is_authenticatedがFalseになってしまう -->
+                <li>日時を選択し、希望するシフトを入力してください。</li>
+                <li>希望シフト開始時間・終了時間を、<br> それぞれ<span
+                        style="text-decoration: underline red;text-decoration-thickness: 3px;">4桁の整数</span>で入力してください。
+                    ex)
+                    1000-1700</li>
+                <li>誤って入力してしまった場合は、以下のボタンよりシフトを削除してください。</li>
+            </ul>
+            <a href="{% url 'shift:delete' %}" class="delete-shift">シフトを削除する<i
+                    class="fa-solid fa-trash-arrow-up"></i></a>
+            <ul class="attention-list">
+                <li>承認されたシフトについては、以下のボタンから確認できます。</li>
+            </ul>
+            <a href="{% url 'shift:confirm' %}" class="confirm-shift">シフトを閲覧する
+                <i class="fa-solid fa-circle-check"></i></a>
+        </div>
+    </div>
+
+    <div style="--date:'2022-07-20';">
+
+    </div>
+</body>
+
+
+
+<style>
+    .fc-day[data-date=var(--date)] {
+        background-color: rgba(247, 172, 32, 0.5);
+    }
+
+    .outer-container {
+        width: 100%;
+        height: 100%;
+    }
+
+    .container-left {
+        margin-top: -30px;
+        margin-left: 20px;
+        width: 50%;
+        border: 3px solid;
+        border-radius: 10px;
+    }
+
+    .container-right {
+        position: absolute;
+        right: 20px;
+        top: 30%;
+        border: 6px double;
+        width: 45%;
+        height: 500px;
+        border-radius: 10px;
+    }
+
+    .calendar {
+        width: 100%;
+        margin: 0 auto;
+        padding: 4px;
+    }
+
+    .fc-media-screen {
+        height: 100%;
+    }
+
+    .fc-scroller-harness {
+        border: 2px solid;
+    }
+
+
+    .fc-toolbar-title {
+        text-align: center;
+        color: black;
+        text-decoration: underline;
+        text-decoration-color: rgb(5, 255, 255);
+        text-decoration-thickness: 5px;
+        font-family: "Meiryo";
+        padding-left: 300px;
+    }
+
+    .fc-daygrid-day {
+        height: 10px;
+        border: 4px solid;
+        border-right: 2px solid;
+    }
+
+    .edit-title {
+        margin-top: -110px;
+    }
+
+    .fc-toolbar {
+        border-bottom-style: solid;
+        border-width: 6px;
+    }
+
+
+    .fc-highlight {
+        border-bottom: 2px solid;
+    }
+
+    td {
+        border: 2px solid;
+    }
+
+    .attention-list {
+        font-size: 25px;
+    }
+
+    .attention-list li {
+        margin-bottom: 10px;
+    }
+
+    .delete-shift {
+        display: block;
+        margin: -30px auto 0 auto;
+        border: 3px solid;
+        border-radius: 10px;
+        width: 400px;
+        height: 50px;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 30px;
+        background-color: rgba(182, 112, 247, 0.5);
+        font-weight: bold;
+        box-shadow: 5px 5px 5px black;
+    }
+
+    .delete-shift:hover {
+        background-color: rgba(182, 112, 247, 1.0);
+        box-shadow: none;
+    }
+
+    .delete-shift:active {
+        border-color: white;
+        color: white;
+    }
+
+    .confirm-shift {
+        display: block;
+        margin: -10px auto 0 auto;
+        border: 3px solid orange;
+        border-radius: 10px;
+        width: 400px;
+        height: 50px;
+        text-align: center;
+        padding: 10px 0;
+        font-size: 30px;
+        background-color: rgba(240, 173, 3, 0.5);
+        font-weight: bold;
+        box-shadow: 5px 5px 5px black;
+        color: red;
+    }
+
+    .confirm-shift:hover {
+        background-color: rgba(240, 173, 3, 1.0);
+        box-shadow: none;
+    }
+
+    .confirm-shift:active {
+        border-color: white;
+        color: white;
+    }
+
+    i {
+        font-size: 30px;
+        margin-left: 10px;
+    }
+</style>
+{% endblock content %}

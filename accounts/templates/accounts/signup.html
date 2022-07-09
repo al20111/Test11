@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}アカウント作成{% endblock %}
+{% block h1 %}アカウント作成{% endblock %}
+{% block content %}
+<div class="container">
+    <form method="post">
+        {% csrf_token %}
+        <p><input type="text" name='username' placeholder="ユーザーID"></p>
+        <p><input type="password" name='password1' placeholder="パスワード"></p>
+        <p><input type="password" name='password2' placeholder="パスワード確認用"></p>
+        <small class="setting-message">パスワードは<span style="text-decoration: underline;">8文字以上</span>で設定してください。</small>
+        {% if form.errors %}
+        <p><span class="error-message">利用できないユーザーIDやパスワードの可能性があります。<br>入力内容を再度確認してください。</span></p>
+        {% endif %}
+        <p><button type="submit">アカウント作成</button></p>
+    </form>
+</div>
+
+<style>
+    .container {
+        border: 2px solid;
+        text-align: center;
+        width: 50%;
+        margin: 0 auto;
+        font-size: 30px;
+        border-radius: 10px;
+    }
+
+    .container input {
+        font-size: 30px;
+        border: 6px double rgb(17, 205, 61);
+
+    }
+
+    button {
+        color: white;
+        background-color: rgba(255, 145, 0, 0.7);
+        font-size: 30px;
+        font-weight: bold;
+        border-radius: 10px;
+        box-shadow: 5px 5px 5px rgb(0, 0, 0);
+    }
+
+    button:hover {
+        background-color: rgba(255, 145, 0, 1.0);
+        color: beige;
+    }
+
+    .setting-message {
+        font-family: "Meiryo";
+    }
+
+    .error-message {
+        font-size: 25px;
+        color: red;
+        font-weight: bold;
+
+    }
+</style>
+{% endblock %}

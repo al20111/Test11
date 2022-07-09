@@ -1,0 +1,154 @@
+{% extends 'base.html' %}
+
+{% block title %}シフト削除{% endblock %}
+{% block h1 %}シフト削除{% endblock %}
+{% block content %}
+
+<div class="container">
+  <form action="{% url 'shift:delete_detail' %}" method="post">
+    <div class="info">
+      {% csrf_token %}
+      <input type="date" name="date_field" required="required" class="shift-calendar">
+      <input type="submit" value="Search" class="search-btn">
+    </div>
+  </form>
+
+  <br>
+
+  {% if shift_list %}
+  <table border="1">
+    {% for shift in shift_list %}
+    <tr class="shift-table">
+      <td>{{ shift.date }}</td>
+      <td>{{ shift.start_time }}</td>
+      <td>{{ shift.end_time }}</td>
+      <td>{{ shift.confirmed_flag }}</td>
+      <td>
+        <form method="post" action="{% url 'shift:deleteShift' shift.id %}">{% csrf_token %}
+          <button class="btn" type="submit" onclick='return confirm("本当に削除しますか？");'>削除</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <h2 class="delete_text">{{ delete_text }}</h2>
+  {% endif %}
+
+  <a href="{% url 'shift:edit' %}" class="back-to-edit">編集画面へ戻る
+    <i class="fa-solid fa-angles-left"></i></a>
+</div>
+
+<style>
+  .input-message {
+    font-size: 35px;
+    text-decoration: underline;
+    text-decoration-color: yellow;
+    text-decoration-thickness: 5px;
+  }
+
+  .info {
+    display: flex;
+    margin: 20px 30% 0 30%;
+    padding: auto 0;
+    border-bottom: 4px solid;
+
+  }
+
+  .container {
+    border: 5px solid;
+    width: 70%;
+    height: 500px;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+
+  .shift-table {
+    width: 100%;
+
+  }
+
+  table {
+    width: 90%;
+    font-size: 45px;
+    margin: 20px auto 0 auto;
+  }
+
+  td {
+    text-align: center;
+
+  }
+
+  tr {
+    margin-bottom: 20px;
+  }
+
+
+  form {}
+
+  .shift-calendar {
+    font-size: 50px;
+    margin-left: 20px;
+    border: 2px solid;
+    margin-bottom: 10px;
+    color: rgb(255, 110, 20);
+  }
+
+
+
+  .search-btn {
+    font-size: 30px;
+    height: 50px;
+    margin-top: 10px;
+    margin-left: 30px;
+    border-radius: 10px;
+    box-shadow: 3px 3px 3px black;
+  }
+
+  .search-btn:hover {
+    background-color: rgba(10, 202, 245, 0.7);
+  }
+
+  button {
+    margin: 10px 0;
+    font-size: 30px;
+    border-radius: 10px;
+    border: 2px solid;
+  }
+
+  button:hover {
+    background-color: rgb(255, 20, 20);
+  }
+
+  .delete_text {
+    text-align: center;
+  }
+
+
+  .back-to-edit {
+    display: block;
+    margin: 100px auto 0 auto;
+    border: 3px solid rgb(44, 224, 21);
+    border-radius: 10px;
+    width: 400px;
+    height: 50px;
+    text-align: center;
+    padding: 10px 0;
+    font-size: 30px;
+    background-color: rgba(9, 176, 59, 0.5);
+    font-weight: bold;
+    box-shadow: 5px 5px 5px black;
+    color: rgb(0, 0, 0);
+  }
+
+  .back-to-edit:hover {
+    background-color: rgba(9, 176, 59, 1.0);
+    box-shadow: none;
+  }
+
+  .back-to-edit:active {
+    border-color: white;
+    color: white;
+  }
+</style>
+{% endblock content %}
