@@ -25,13 +25,13 @@ from django.template.loader import render_to_string # ajax_update_history
 # Create your views here.
 
 '''
-モジュール名: GetDestinationList
+モジュール名: get_destination_list
 作成者: 國枝直希
 日付: 2022.7.10
 機能要約: 各個人IDに対応するメッセージの送信先のID, 名前のリストを返す
 '''
 
-def GetDestinationList(user_id):
+def get_destination_list(user_id):
     # 自分の所属する店舗IDを取得
     shop_id = Staff.objects.filter(user=user_id).values('store')[0]['store']
 
@@ -55,18 +55,18 @@ def GetDestinationList(user_id):
     return dest_list, dest_name_list
 
 '''
-モジュール名: GetDestinationInfo
+モジュール名: get_destination_info
 作成者: 國枝直希
 日付: 2022.7.10
 機能要約: 各個人IDに対応するメッセージの送信先選択画面をレンダリングする
 '''
 
-def GetDestinationInfo(request, user_id):
+def get_destination_info(request, user_id):
     user_id = request.user
 
     # 送信先のリスト, 未読数を取得
-    dest_list, dest_name_list = GetDestinationList(user_id)
-    flag, unread_list = Message().CalcUnreadNumberList(user_id.id, dest_list)
+    dest_list, dest_name_list = get_destination_list(user_id)
+    flag, unread_list = Message().calc_unread_number_list(user_id.id, dest_list)
 
     # テンプレートに送信先の名前と未読数をまとめて渡す準備
     dest_zip = zip(dest_name_list, unread_list)
@@ -107,8 +107,8 @@ def ajax_update_history(request):
 
     # Ajax側に返す情報を取得
     dest_ID = User.objects.filter(username=dest_name).values_list('id',flat=True)[0]
-    detect_flag, unread_number = Message().UpdateMessageHistory(ind_ID,dest_ID)
-    flag,messages = Message().GetMessageHistory(ind_ID,dest_ID)
+    detect_flag, unread_number = Message().update_message_history(ind_ID,dest_ID)
+    flag,messages = Message().get_message_history(ind_ID,dest_ID)
     context = {'messages':messages,'user_id':request.user,'dest_name':dest_name}
 
     # 最新のメッセージ履歴をテンプレートを使ってレンダリング
@@ -122,21 +122,21 @@ def ajax_update_history(request):
     return JsonResponse(data)
 
 '''
-モジュール名: GetMessageHistory
+モジュール名: get_message_history
 作成者: 國枝直希
 日付: 2022.7.10
 機能要約: 各個人IDに対応する選択された送信先とのメッセージ履歴をレンダリングし, 
          メッセージを送信した場合は内容をメッセージ履歴DBに保存する
 '''
 
-def GetMessageHistory(request, dest_id):
+def get_message_history(request, dest_id):
     ind_ID = request.user.id
     dest_ID = User.objects.filter(username=dest_id).values_list('id', flat=True)[0]
     dest_name = dest_id
 
     # メッセージ履歴を取得
     messages = Message()
-    flag, messages = messages.GetMessageHistory(ind_ID, dest_ID)
+    flag, messages = messages.get_message_history(ind_ID, dest_ID)
 
     # POST の場合: メッセージ送信
     if request.method == "POST":
@@ -162,13 +162,13 @@ def GetMessageHistory(request, dest_id):
             request,
             'shift/history.html',
             {'messages': messages, 'form': form,
-                'user_id': request.user, 'dest_name': dest_name}
+            'user_id': request.user, 'dest_name': dest_name}
         )
     return render(
         request,
         'shift/history.html',
         {'messages': messages, 'form': form,
-            'user_id': request.user, 'dest_name': dest_name}
+        'user_id': request.user, 'dest_name': dest_name}
     )
 
 
