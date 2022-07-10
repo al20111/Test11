@@ -18,53 +18,53 @@ class Store(models.Model):
         return self.name
 
 class Message(models.Model):
-    indivisual_ID = models.PositiveIntegerField()
-    dest_ID = models.PositiveIntegerField()
+    indivisual_id = models.PositiveIntegerField()
+    dest_id = models.PositiveIntegerField()
     message = models.CharField(max_length=2000)
     read_status = models.PositiveIntegerField()
     send_time = models.DateTimeField(auto_now_add=True)
 
-    def CalcUnreadNumberList(self,indivisual_ID,dest_ID_list):
+    def CalcUnreadNumberList(self,indivisual_id,dest_id_list):
         success_flag = 1
         unread_number_list = []
 
-        for dest_ID in dest_ID_list:
+        for dest_id in dest_id_list:
             unread_number = 0
             unread_number = Message.objects.filter(
-                indivisual_ID = dest_ID,
-                dest_ID = indivisual_ID,
+                indivisual_id = dest_id,
+                dest_id = indivisual_id,
                 read_status = 0
             ).count()
             unread_number_list.append(unread_number)
 
         return success_flag,unread_number_list
 
-    def GetMessageHistory(self,indivisual_ID,dest_ID):
+    def GetMessageHistory(self,indivisual_id,dest_id):
         success_flag = 1
         # 相手から送られたメッセージに既読をつける
         dest_message = Message.objects.filter(
-            Q(indivisual_ID = dest_ID, dest_ID = indivisual_ID)
+            Q(indivisual_id = dest_id, dest_id = indivisual_id)
         )
         for message in dest_message:
             message.read_status = 1
             message.save(force_update=True)
         
         message_history = Message.objects.filter(
-            Q(indivisual_ID = indivisual_ID,dest_ID = dest_ID) 
-            | Q(indivisual_ID = dest_ID, dest_ID = indivisual_ID)
+            Q(indivisual_id = indivisual_id,dest_id = dest_id) 
+            | Q(indivisual_id = dest_id, dest_id = indivisual_id)
         )
         return success_flag,message_history
     
-    def UpdateMessageHistory(self,indivisual_ID,dest_ID):
+    def UpdateMessageHistory(self,indivisual_id,dest_id):
         detect_flag = False
         dest_unread_number = Message.objects.filter(
-            indivisual_ID = dest_ID,
-            dest_ID = indivisual_ID,
+            indivisual_id = dest_id,
+            dest_id = indivisual_id,
             read_status = 0
         ).count()
         my_unread_number = Message.objects.filter(
-            indivisual_ID = indivisual_ID,
-            dest_ID = dest_ID,
+            indivisual_id = indivisual_id,
+            dest_id = dest_id,
             read_status = 0
         ).count()
         if not dest_unread_number == 0:

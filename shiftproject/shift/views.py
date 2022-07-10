@@ -20,31 +20,55 @@ from .forms import CalendarForm, ShiftForm, ConfirmForm
 from django.middleware.csrf import get_token
 from django.template import loader
 from django.urls import reverse
-from django.template.loader import render_to_string
+from django.template.loader import render_to_string # ajax_update_history
 
 # Create your views here.
 
+'''
+モジュール名: GetDestinationList
+作成者: 國枝直希
+日付: 2022.7.10
+機能要約: 各個人IDに対応するメッセージの送信先のID, 名前のリストを返す
+'''
 
 def GetDestinationList(user_id):
+    # 自分の所属する店舗IDを取得
     shop_id = Staff.objects.filter(user=user_id).values('store')[0]['store']
+
+    # 同じ店舗IDに所属するユーザーを取得
     dest_id_list = Staff.objects.filter(store=shop_id).values('user')
+
+    # 送信先のid, 名前のリストを作成
     dest_list = []
     dest_name_list = []
     for dest_id in dest_id_list:
         dest = dest_id['user']
         dest_name = User.objects.filter(
-            id=dest_id['user']).values_list('username', flat=True)[0]
+            id=dest_id['user']
+        ).values_list('username', flat=True)[0]
         dest_list.append(dest)
         dest_name_list.append(dest_name)
+    
+    # 送信先のリストから自分自身を除外
     dest_list.pop(dest_list.index(user_id.id))
     dest_name_list.pop(dest_name_list.index(user_id.username))
     return dest_list, dest_name_list
 
+'''
+モジュール名: GetDestinationInfo
+作成者: 國枝直希
+日付: 2022.7.10
+機能要約: 各個人IDに対応するメッセージの送信先選択画面をレンダリングする
+'''
 
 def GetDestinationInfo(request, user_id):
     user_id = request.user
+
+    # 送信先のリスト, 未読数を取得
     dest_list, dest_name_list = GetDestinationList(user_id)
     flag, unread_list = Message().CalcUnreadNumberList(user_id.id, dest_list)
+
+    # テンプレートに送信先の名前と未読数をまとめて渡す準備
     dest_zip = zip(dest_name_list, unread_list)
     if not flag:
         return render(
@@ -58,38 +82,71 @@ def GetDestinationInfo(request, user_id):
         {'dest_list': dest_zip}
     )
 
+'''
+モジュール名: send
+作成者: 國枝直希
+日付: 2022.7.10
+機能要約: 送信先選択画面へ遷移する
+'''
 
 def send(request):
     return redirect("shift:select", user_id=request.user)
 
+'''
+モジュール名: ajax_update_history
+作成者: 國枝直希
+日付: 2022.7.10
+機能要約: メッセージが送信先から送られたどうかと未読数, 最新のメッセージ履歴をJson形式で返す
+'''
+
 def ajax_update_history(request):
     ind_ID = request.user.id
+
+    # GET リクエストの取得
     dest_name = request.GET['dest_name']
+
+    # Ajax側に返す情報を取得
     dest_ID = User.objects.filter(username=dest_name).values_list('id',flat=True)[0]
     detect_flag, unread_number = Message().UpdateMessageHistory(ind_ID,dest_ID)
     flag,messages = Message().GetMessageHistory(ind_ID,dest_ID)
     context = {'messages':messages,'user_id':request.user,'dest_name':dest_name}
+
+    # 最新のメッセージ履歴をテンプレートを使ってレンダリング
     content = render_to_string("shift/content.html",context,request)
     if detect_flag:
+        # 相手からの新規メッセージがあった場合
         data = {'flag':True,'unread_number':unread_number,'content':content}
     else:
+        # 相手からの新規メッセージがなかった場合
         data = {'flag':False,'unread_number':unread_number,'content':content}
     return JsonResponse(data)
 
+'''
+モジュール名: GetMessageHistory
+作成者: 國枝直希
+日付: 2022.7.10
+機能要約: 各個人IDに対応する選択された送信先とのメッセージ履歴をレンダリングし, 
+         メッセージを送信した場合は内容をメッセージ履歴DBに保存する
+'''
+
 def GetMessageHistory(request, dest_id):
     ind_ID = request.user.id
-    dest_ID = User.objects.filter(
-        username=dest_id).values_list('id', flat=True)[0]
+    dest_ID = User.objects.filter(username=dest_id).values_list('id', flat=True)[0]
     dest_name = dest_id
+
+    # メッセージ履歴を取得
     messages = Message()
     flag, messages = messages.GetMessageHistory(ind_ID, dest_ID)
 
+    # POST の場合: メッセージ送信
     if request.method == "POST":
         message_info = Message(
-            indivisual_ID=ind_ID,
-            dest_ID=dest_ID,
+            indivisual_id=ind_ID,
+            dest_id=dest_ID,
             read_status=0
         )
+        # request.POST: message内容のみ
+        # メッセージ履歴に保存できるようformにインスタンスを提供
         form = MessageForm(request.POST, instance=message_info)
         if form.is_valid():
             message = form.save(commit=False)
@@ -97,7 +154,9 @@ def GetMessageHistory(request, dest_id):
             message.save()
             return redirect("shift:history", dest_id=dest_id)
     else:
+        # GET の場合は空のフォームを作成
         form = MessageForm()
+
     if not flag:
         return render(
             request,

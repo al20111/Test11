@@ -2,9 +2,7 @@
 {% block title %}メッセージ送信{% endblock %}
 {% block h1 %}メッセージ送信{% endblock %}
 {% block content %}
-<!--head>
-    <link href="style.css" rel="stylesheet" type="text/css">
-</head-->
+
 <div class="outer-content">
     <div class="inner-content">
         <div id="message-content">
@@ -52,29 +50,38 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="{% static 'shift/js/ajax.js' %}"></script>
 <script type="text/javascript">
+    var interval = 1000;    //1000ms = 1s
+    var unread_number;  //未読数記録用
+
     //1秒ごとにメッセージ履歴が変化してないかを検知してメッセージ履歴を更新
-    var interval = 1000;
-    var unread_number;
     function callAjax() {
-        let form_elem = "#form_area";
-        let form_data = new FormData($(form_elem).get(0));
+
+        //ajax通信で非同期処理
         $.ajax({
             url: '/shift/update_history/',
             type: 'GET',
             data: {dest_name:'{{dest_name}}'},
             dataType: 'json',
         }).done(function (data) {
+            //data.flag = True: メッセージが相手から送信された
             if (data.flag) {
                 $("#message-content").html(data.content);
-            }else if (unread_number == undefined || unread_number < data.unread_number){
+            }
+            else if (unread_number == undefined || unread_number < data.unread_number){
+                //未読数が未記録or自分がメッセージ送信した場合は初期化
                 unread_number = data.unread_number
-            }else if (unread_number > data.unread_number){
+            }
+            else if (unread_number > data.unread_number){
+                //未読数が記録していたものより減った=既読が付いたので更新
                 $("#message-content").html(data.content);
             }
         })
-        setTimeout(callAjax, interval);  //callAjax() par 1000ms = 1s
+
+        //callAjax()をintervalミリ秒=1秒後に呼ぶ
+        setTimeout(callAjax, interval);
     };
-    callAjax();
+
+    callAjax(); //呼び出し
 </script>
 <style>
     body {
