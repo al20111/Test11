@@ -1,0 +1,65 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}意見送信|意見箱{% endblock %}
+{% block h1 %}意見送信{% endblock %}
+{% block content %}
+<div class="wel-message">雇用者に意見を送信することができます。</div>
+<div>
+    <form method='POST'>{% csrf_token %}
+        {{form.text|add_class:'form-opinion'}}
+</div>
+<div>
+    <input type='submit' Value='送信'>
+    <i class="fa-solid fa-paper-plane-top"></i>
+</div>
+</form>
+
+<style>
+    .wel-message {
+        text-align: center;
+        font-size: large;
+    }
+
+    .form-opinion {
+        font-size: 30px;
+        width: 70%;
+        margin-left: 15%;
+        border: 2px solid;
+        border-radius: 5px;
+    }
+
+    /* なんか時間差で更新されて泣く */
+
+    .form-board {
+        height: 10em;
+        font-size: 200%;
+        background-color: aquamarine;
+    }
+
+    input {
+        display: block;
+        width: 150px;
+        height: 70px;
+        font-size: 45px;
+        margin: 10px auto;
+        background: linear-gradient(135deg, #ffd900, #ff9300);
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: 0.3s;
+        border: 2px solid #ff9300;
+        background: #fff;
+        color: #ff9300;
+    }
+
+    input:hover {
+        background: #ff9300;
+        color: #fff;
+    }
+
+    input:active,
+    input:focus {
+        top: 2px;
+    }
+</style>
+{% endblock content %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}掲示板編集{% endblock %}
+{% block h1 %}掲示板編集{% endblock %}
+{% block content %}
+<div>
+    <form method='POST'>{% csrf_token %}
+        {{ form.text|add_class:'form-board'}}
+        <button type='submit'>確定</button>
+    </form>
+</div>
+
+<style>
+    .form-board {
+        font-size: 30px;
+        width: 70%;
+        margin-left: 15%;
+        border: 2px solid;
+        border-radius: 5px;
+        display: block;
+        border: 20px solid rgb(248, 112, 0);
+        background-color: rgba(228, 144, 18, 0.4);
+        box-shadow: 8px 8px 1px black;
+        height: 500px;
+        width: 70%;
+        margin: 0 auto;
+        /* background-image: url(https://thumb.ac-illust.com/86/8648dc63957c50e6b02a842c65e7d677_t.jpeg); */
+        background-size: cover;
+
+    }
+
+    button {
+        position: absolute;
+        display: block;
+        width: 150px;
+        height: 70px;
+        font-size: 45px;
+        left: 50%;
+        bottom: 20%;
+        transform: translate(-50%, -50%);
+        background: linear-gradient(135deg, #ffd900, #ff9300);
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: 0.3s;
+        border: 2px solid #ff9300;
+        background: #fff;
+        color: #ff9300;
+    }
+
+    button:hover {
+        background: #ff9300;
+        color: #fff;
+    }
+</style>
+{% endblock content %}

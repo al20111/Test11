@@ -1,0 +1,28 @@
+{% if messages %}
+{% for message in messages %}
+{% if message.indivisual_id == user_id.id %}
+<!-- css適用するとき用 -->
+<!-- 自分の吹き出し -->
+<div class="message__right">
+    <div class="message-right-name">{{user_id.username}}</div>
+    <div class="message-right-text">{{message.message}}</div>
+    <div class="message-right-date">
+        {% if message.read_status == 1 %}
+        <p style="text-align:right" class="date">既読 {{message.send_time}}</p>
+        {% else %}
+        <p style="text-align:right" class="date">{{message.send_time}}</p>
+        {% endif %}
+    </div>
+</div>
+
+{% else %}
+<!-- css適用するとき用 -->
+<!-- 相手の吹き出し -->
+<div class="message__left">
+    <div class="message-left-name">{{dest_name}}</div>
+    <div class="message-left-text">{{message.message}}</div>
+    <span class="message-left-date">{{message.send_time}}</span>
+</div>
+{% endif %}
+{% endfor %}
+{% endif %}
