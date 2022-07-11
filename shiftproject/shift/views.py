@@ -14,7 +14,7 @@ from django.views.generic import(
     DetailView,
 )
 from django.http import Http404, HttpResponse, JsonResponse, HttpResponseRedirect
-import time
+import time #給料計算
 import json
 from .forms import CalendarForm, ShiftForm, ConfirmForm
 from django.middleware.csrf import get_token
@@ -273,20 +273,27 @@ class CreateStaffView(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 
+
+'''
+モジュール名: edit
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: カレンダーを表示する
+'''
 def edit(request):
-    """
-    カレンダー画面
-    """
+    shift = ShiftData.objects.filter(user_id=request.user.id)
     get_token(request)
-    template = loader.get_template('shift/edit.html')
-    return HttpResponse(template.render())
+    #template = loader.get_template('shift/edit.html') #カレンダーを表示する
+    #return HttpResponse(template.render())
+    return render(request, 'shift/edit.html', {'shift_list':shift},)
 
-
+'''
+モジュール名: add_shift
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: データベースにシフトの登録を行う
+'''
 def add_shift(request):
-    """
-    シフト登録
-    """
-
     if request.method == "GET":
         # GETは対応しない
         raise Http404()
@@ -326,12 +333,13 @@ def add_shift(request):
     # 空を返却
     return HttpResponse("edit")
 
-
+'''
+モジュール名: get_shift
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: カレンダーに表示するイベントをデータベースから取得する
+'''
 def get_shift(request):
-    """
-    イベントの取得
-    """
-
     if request.method == "GET":
         # GETは対応しない
         raise Http404()
@@ -382,20 +390,35 @@ def get_shift(request):
 
     return JsonResponse(list, safe=False)
 
-
+'''
+モジュール名: confirm
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: 従業員の閲覧画面でカレンダーを表示させる
+'''
 def confirm(request):
     get_token(request)
-    template = loader.get_template('shift/confirm.html')
-    return HttpResponse(template.render())
+    shift = ShiftData.objects.filter(user_id=request.user.id)
+    return render(request, 'shift/confirm.html', {'shift_list':shift},)
 
-
+'''
+モジュール名: confirm_author
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: 雇用者の閲覧画面でカレンダーを表示させる
+'''
 def confirm_author(request):
     get_token(request)
-    template = loader.get_template('shift/confirm_author.html')
-    return HttpResponse(template.render())
-
-
-def confirmShift(request):
+    get_token(request)
+    shift = ShiftData.objects.filter(user_id=request.user.id)
+    return render(request, 'shift/confirm_author.html', {'shift_list':shift},)
+'''
+モジュール名: confirm_shift
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: 従業員の閲覧画面のカレンダーで表示させる承認済みのシフトをデータベースから取得する
+'''
+def confirm_shift(request):
     if request.method == "GET":
         # GETは対応しない
         raise Http404()
@@ -444,8 +467,13 @@ def confirmShift(request):
         )
     return JsonResponse(list, safe=False)
 
-
-def confirmShiftAuthor(request):
+'''
+モジュール名: confirm_shift_author
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: 雇用者の閲覧画面のカレンダーで表示させるシフト（承認・未承認）をデータベースから取得する
+'''
+def confirm_shift_author(request):
     if request.method == "GET":
         # GETは対応しない
         raise Http404()
@@ -483,8 +511,13 @@ def confirmShiftAuthor(request):
         )
     return JsonResponse(list, safe=False)
 
-
-def shiftMine(request):
+'''
+モジュール名: shift_mine
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: 従業員の閲覧画面に表示させる該当月の給料計算を行う
+'''
+def shift_mine(request):
     if request.method == "GET":
         # GETは対応しない
         raise Http404()
@@ -556,11 +589,15 @@ def shiftMine(request):
             "year": year, "month": month, "date": date, "confirmShift_S": confirmShift.start_time, "confirmShift_E": confirmShift.end_time, "user": confirmShift.user_id, "money": money,
         }
     )
-
     return JsonResponse(list, safe=False)
 
-
-def shiftOthers(request):
+'''
+モジュール名: shift_others
+作成者: 若田佳菜子
+日付: 2022.7.11
+機能要約: 雇用者のカレンダーに表示させる従業員全員分のシフト（承認・未承認）をデータベースから取得する
+'''
+def shift_others(request):
     if request.method == "GET":
         # GETは対応しない
         raise Http404()
