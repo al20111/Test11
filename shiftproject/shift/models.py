@@ -18,55 +18,66 @@ class Store(models.Model):
         return self.name
 
 class Message(models.Model):
-    indivisual_ID = models.PositiveIntegerField()
-    dest_ID = models.PositiveIntegerField()
+    indivisual_id = models.PositiveIntegerField()
+    dest_id = models.PositiveIntegerField()
     message = models.CharField(max_length=2000)
     read_status = models.PositiveIntegerField()
     send_time = models.DateTimeField(auto_now_add=True)
 
-    def CalcUnreadNumberList(self,indivisual_ID,dest_ID_list):
+    # 未読数のリストを返す
+    def calc_unread_number_list(self,indivisual_id,dest_id_list):
         success_flag = 1
         unread_number_list = []
 
-        for dest_ID in dest_ID_list:
+        for dest_id in dest_id_list:
             unread_number = 0
             unread_number = Message.objects.filter(
-                indivisual_ID = dest_ID,
-                dest_ID = indivisual_ID,
+                indivisual_id = dest_id,
+                dest_id = indivisual_id,
                 read_status = 0
             ).count()
             unread_number_list.append(unread_number)
 
         return success_flag,unread_number_list
 
-    def GetMessageHistory(self,indivisual_ID,dest_ID):
+    # 個人IDと送信先のIDに対応したメッセージ履歴を返す
+    def get_message_history(self,indivisual_id,dest_id):
         success_flag = 1
+
         # 相手から送られたメッセージに既読をつける
         dest_message = Message.objects.filter(
-            Q(indivisual_ID = dest_ID, dest_ID = indivisual_ID)
+            Q(indivisual_id = dest_id, dest_id = indivisual_id)
         )
         for message in dest_message:
             message.read_status = 1
             message.save(force_update=True)
         
+        # メッセージ履歴を取得
         message_history = Message.objects.filter(
-            Q(indivisual_ID = indivisual_ID,dest_ID = dest_ID) 
-            | Q(indivisual_ID = dest_ID, dest_ID = indivisual_ID)
+            Q(indivisual_id = indivisual_id,dest_id = dest_id) 
+            | Q(indivisual_id = dest_id, dest_id = indivisual_id)
         )
         return success_flag,message_history
     
-    def UpdateMessageHistory(self,indivisual_ID,dest_ID):
+    # 新規メッセージが送られているかどうかと自分のメッセージの未読数を返す
+    def update_message_history(self,indivisual_id,dest_id):
         detect_flag = False
+
+        # 送信先の未読数を取得
         dest_unread_number = Message.objects.filter(
-            indivisual_ID = dest_ID,
-            dest_ID = indivisual_ID,
+            indivisual_id = dest_id,
+            dest_id = indivisual_id,
             read_status = 0
         ).count()
+
+        # 自分の未読数を取得
         my_unread_number = Message.objects.filter(
-            indivisual_ID = indivisual_ID,
-            dest_ID = dest_ID,
+            indivisual_id = indivisual_id,
+            dest_id = dest_id,
             read_status = 0
         ).count()
+
+        # 送信先の未読数が0でなければTrue
         if not dest_unread_number == 0:
             detect_flag = True
         return detect_flag,my_unread_number
