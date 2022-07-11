@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block title %}意見箱・掲示板{% endblock %}
+{% block h1 %}掲示板{% endblock %}
+{% block content %}
+{% for item in object_list %}
+{% if request.user.is_staff %}
+<a href="{% url 'shift:board-edit' item.pk %}" class="btn board-edit">掲示板編集</a>
+{% else %}
+<a href="{% url 'shift:board-detail' item.pk%}" class="btn board-confirm">掲示板確認</a>
+{% endif %}
+{% endfor %}
+{% if request.user.is_staff %}
+<a href="{% url 'shift:opinion-list' %}" class="btn opinion-box">意見箱</a>
+{% else %}
+<a href="{% url 'shift:opinion-create' %}" class="btn opinion-send">意見送信</a>
+{% endif %}
+
+<style>
+    .btn {
+        font-size: 40px;
+        margin: 10px 10px;
+        padding: 70px 50px;
+        color: white;
+        display: inline-block;
+        opacity: 0.8;
+        border-radius: 40px;
+        width: 30%;
+        height: 120px;
+        text-align: center;
+    }
+
+    .inner {
+        position: relative;
+    }
+
+    .board-edit {
+        background-color: #1f6fd8;
+        position: absolute;
+        left: 150px;
+    }
+
+    .board-confirm {
+        background-color: #1f6fd8;
+        position: absolute;
+        left: 150px;
+    }
+
+
+    .opinion-box {
+        background-color: #1f6fd8;
+        position: absolute;
+        right: 150px;
+    }
+
+    .opinion-send {
+        background-color: #1f6fd8;
+        position: absolute;
+        right: 150px;
+    }
+
+
+    .btn p {
+        color: white;
+        font-size: 40px;
+    }
+
+    .btn:hover {
+        opacity: 1.0;
+        box-shadow: none;
+        transform: translateY(5px);
+    }
+</style>
+{% endblock content %}

@@ -1,0 +1,221 @@
+{% extends 'base.html' %}
+{% block title %}閲覧{% endblock %}
+{% block h1 %}<div class="confirm-title">閲覧</div>{% endblock %}
+{% block content %}
+
+<head>
+
+    <meta charset='utf-8' />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.css">
+    <link rel="stylesheet" href="./../../static/shift/css/timetablejs.css">
+</head>
+
+<body>
+
+
+    <div class="items-list">
+        <div class="container container-calendar">
+            <div class="calendar" id='calendar'></div>
+
+
+            <script type="text/javascript">
+
+                function select_date(year, month, date) {
+                    let date_area = document.getElementById('selected_date');
+                    date_area.innerHTML = String(year) + "年" + String(month) + "月" + String(date) + "日";
+                }
+            </script>
+
+
+            {% load static %}
+            <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+            <script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.10.2/main.min.js"></script>
+            <script type="text/javascript" src="{% static 'shift/js/timetable.js' %}"></script>
+            <script type="text/javascript" src="{% static 'shift/js/confirm_hour.js' %}"></script>
+            <script type="text/javascript">
+                document.addEventListener('DOMContentLoaded', function () {
+
+                    // CSRF対策
+                    axios.defaults.xsrfHeaderName = "X-CSRFTOKEN"
+                    axios.defaults.xsrfCookieName = "csrftoken"
+                    var calendarEl = document.getElementById('calendar');
+                    var calendar = new FullCalendar.Calendar(calendarEl, {
+                        initialView: 'dayGridMonth',
+                        locale: 'ja',
+                        dayCellContent: function (e) {
+                            e.dayNumberText = e.dayNumberText.replace('日', '');
+                        },
+                        selectable: true,
+                        select: function (info) {
+
+                            // シフト時間表示処理,給料情報の呼び出し
+                            axios
+                                .post("/shift/ShiftOthers/", {
+                                    date: info.start.valueOf(),
+                                })
+                                .then((response) => {
+                                    //選択された日付のシフト時間を表示
+                                    //YEAR, MONTH, DATE, S_TIME, E_TIME, USER , FLAG = response.data
+                                    list = response.data;
+                                    LIST = response.data;
+                                    select_date(list[0].year, list[0].month, list[0].date);
+                                    //TimeTableAuthor(list);
+                                    var timetable = new Timetable();
+                                    timetable.setScope(9, 22); // optional, only whole hours between 0 and 23
+                                    timetable.useTwelveHour(); //optional, displays hours in 12 hour format (1:00PM)
+
+                                    var num = LIST.length;
+                                    var user = [LIST[0].user];
+                                    for (let i = 1; i < num; i++) {
+                                        user.push(LIST[i].user);
+                                    }
+                                    timetable.addLocations(user);
+                                    for (let i = 0; i < num; i++) {
+                                        S_time_hour = Math.floor(LIST[i].start / 100);
+                                        S_time_min = LIST[i].start % 100;
+                                        E_time_hour = Math.floor(LIST[i].end / 100);
+                                        E_time_min = LIST[i].end % 100;
+                                        if (LIST[0].flag == 0) {
+                                            timetable.addEvent('未承認', LIST[i].user, new Date(LIST[i].year, LIST[i].month, LIST[i].date, S_time_hour, S_time_min), new Date(LIST[i].year, LIST[i].month, LIST[i].date, E_time_hour, E_time_min));
+                                        } else {
+                                            timetable.addEvent('承認済み', LIST[i].user, new Date(LIST[i].year, LIST[i].month, LIST[i].date, S_time_hour, S_time_min), new Date(LIST[i].year, LIST[i].month, LIST[i].date, E_time_hour, E_time_min));
+                                        }
+                                    }
+                                    var renderer = new Timetable.Renderer(timetable);
+                                    renderer.draw('.timetable'); // any css selector
+
+                                })
+                                .catch(() => {
+                                    // バリデーションエラーなど
+                                    alert("シフトがありません");
+                                });
+                        },
+                        events: function (info, successCallback, failureCallback) {
+
+                            axios
+                                .post("/shift/confirmShiftAuthor/", {
+                                    start_date: info.start.valueOf(),
+                                    end_date: info.end.valueOf(),
+                                })
+                                .then((response) => {
+                                    calendar.removeAllEvents();
+                                    successCallback(response.data);
+                                })
+                                .catch(() => {
+                                    バリデーションエラーなど
+                                    alert("登録に失敗しました");
+                                });
+                        },
+
+                    });
+
+                    calendar.render();
+                });
+
+
+            </script>
+        </div>
+        <div class="container container-info">
+            <h1>
+                <p id="selected_date" class="selected_date"></p>
+            </h1>
+
+            <h1 class="shift-hour">シフト時間</h1>
+            <div class="timetable"></div>
+        </div>
+    </div>
+</body>
+
+<style>
+    .confirm-title {
+        margin-top: -110px;
+    }
+
+    .fc-toolbar-title {
+        text-align: center;
+        color: rgb(0, 0, 0);
+        font-family: "Meiryo";
+        padding-left: 350px;
+        padding-top: 20px;
+        text-decoration: underline rgb(24, 206, 63);
+        text-decoration-thickness: 4px;
+    }
+
+    .fc-toolbar {
+        border-bottom-style: solid;
+        border-width: 6px;
+        border-color: rgb(2, 105, 165);
+    }
+
+    .fc-toolbar-chunk {
+        padding-right: 10px;
+    }
+
+    .fc-next-button {
+        margin-left: 20px;
+    }
+
+    .container {
+        width: 100%;
+    }
+
+    .container-calendar {
+        border: 3px solid;
+        margin-top: -40px;
+        margin-left: 10px;
+        border-radius: 10px;
+        width: 50%;
+    }
+
+    .container-info {
+        width: 45%;
+        border: 3px solid;
+        margin: 0 20px;
+        border-radius: 10px;
+    }
+
+    .container-info h1 {
+        text-align: center;
+        font-family: "Meiryo";
+    }
+
+
+    .items-list {
+        display: flex;
+        width: 100%;
+        height: 100%;
+    }
+
+    .fc-event-title-container {
+        background-color: rgb(12, 176, 241);
+    }
+
+    .selected_date {
+        text-decoration: underline rgb(24, 206, 63);
+        text-decoration-thickness: 4px;
+        margin-top: 0;
+    }
+
+    .timetable {
+        margin-top: 100px;
+    }
+
+    .syncscroll {
+        margin-right: 20px;
+    }
+
+    li {
+        margin-top: 100px;
+    }
+
+    aside {
+        border-right: 2px solid;
+    }
+
+    .shift-hour {
+        margin-top: 10px;
+    }
+</style>
+
+
+{% endblock content %}
