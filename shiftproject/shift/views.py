@@ -121,7 +121,7 @@ def GetMessageHistory(request, dest_id):
 class ListOBView(LoginRequiredMixin, ListView):
     model = Board
     template_name = 'shift/board_list.html'
-    # 今ログインいているユーザーが所属している店舗に関するページを表示
+# 今ログインいているユーザーが所属している店舗に関するページを表示
     def get_queryset(self):
         store = Staff.objects.get(user=self.request.user)
         store_id = store.store
@@ -163,7 +163,7 @@ class CreateOpinionView(LoginRequiredMixin, CreateView):
     fields = (['text'])
     template_name = 'shift/opinion_create.html'
     success_url = reverse_lazy('shift:opinion-create')
-    #現在ログインしているユーザーのIDをformに入れる
+    #現在ログインしているユーザーのIDをformに入れる 
     def form_valid(self, form):
         store = Staff.objects.get(user=self.request.user)
         store_id = store.store
@@ -205,7 +205,7 @@ class CreateStaffView(LoginRequiredMixin, CreateView):
             template_name='index.html'
         else:
             template_name='shift/store_create.html'
-        
+
         return [template_name]
 
     #現在ログインしているユーザーのIDをformに入れる
