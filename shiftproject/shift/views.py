@@ -171,44 +171,69 @@ def get_message_history(request, dest_id):
         'user_id': request.user, 'dest_name': dest_name}
     )
 
-
+'''
+モジュール名:  ListOBView
+作成者:  叶恒志
+日付:  2022.7.10
+機能要約:  店舗ごとの掲示板送信・確認ページや意見送信・意見箱ページを表示
+'''
 class ListOBView(LoginRequiredMixin, ListView):
     model = Board
     template_name = 'shift/board_list.html'
-
+# 今ログインいているユーザーが所属している店舗に関するページを表示
     def get_queryset(self):
         store = Staff.objects.get(user=self.request.user)
         store_id = store.store
         queryset = super().get_queryset()
         return queryset.filter(store=store_id)
 
-
+'''
+モジュール名:  UPdateViewBoradView
+作成者:  叶恒志
+日付:  2022.7.10
+機能要約:  店舗ごとの掲示板内容を更新する
+'''
 class UpdateViewBoradView(LoginRequiredMixin, UpdateView):
     model = Board
     fields = (['text'])
     template_name = 'shift/board_edit.html'
     success_url = reverse_lazy('shift:OB')
 
-
+'''
+モジュール名:  DetailBoardView
+作成者:  叶恒志
+日付:  2022.7.10
+機能要約:  店舗ごとの掲示板内容を表示する
+'''
 class DetailBoardView(LoginRequiredMixin, DetailView):
     model = Board
     fields = (['text'])
     template_name = 'shift/board_detail.html'
 
+'''
+モジュール名:  CreateOpinionView
+作成者:  叶恒志
+日付:  2022.7.10
+機能要約:  店舗ごとの意見箱内容を更新する
+'''
 
 class CreateOpinionView(LoginRequiredMixin, CreateView):
     model = Opinion
     fields = (['text'])
     template_name = 'shift/opinion_create.html'
     success_url = reverse_lazy('shift:opinion-create')
-
+    #現在ログインしているユーザーのIDをformに入れる 
     def form_valid(self, form):
         store = Staff.objects.get(user=self.request.user)
         store_id = store.store
         form.instance.store = store_id
         return super().form_valid(form)
-
-
+'''
+モジュール名:  ListOpinionView
+作成者:  叶恒志
+日付:  2022.7.10
+機能要約:  店舗ごとの意見箱内容を表示する
+'''
 class ListOpinionView(LoginRequiredMixin, ListView):
     model = Opinion
     template_name = 'shift/opinion_list.html'
@@ -220,14 +245,29 @@ class ListOpinionView(LoginRequiredMixin, ListView):
         queryset = super().get_queryset()
         return queryset.filter(store=store_id)
 
+'''
+モジュール名:  CreateStaffView
+作成者:  叶恒志
+日付:  2022.7.10
+機能要約:  店舗とユーザーを紐づける
+'''
 
-class CreateStoreView(LoginRequiredMixin, CreateView):
+class CreateStaffView(LoginRequiredMixin, CreateView):
     model = Staff
     form = StaffCreateForm
     fields = (['store'])
     template_name = 'shift/store_create.html'
     success_url = reverse_lazy('index')
+    #すでに店舗を登録しているユーザーにはメニュー画面を表示させる
+    def get_template_names(self):
+        if Staff.objects.filter(user=self.request.user).exists():
+            template_name='index.html'
+        else:
+            template_name='shift/store_create.html'
 
+        return [template_name]
+
+    #現在ログインしているユーザーのIDをformに入れる
     def form_valid(self, form):
         form.instance.user = self.request.user
         return super().form_valid(form)
