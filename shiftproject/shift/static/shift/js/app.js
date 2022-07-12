@@ -21,7 +21,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if (isNaN(st) || isNaN(et)){
                 alert("正しく入力してください ex)1000-1700")
             }
-            else if(st>et){
+            else if(st >= et){
                 alert("開始時間は終了時間より前に設定してください");
             }
             else if(st/100 > 24 || et/100 > 24){
