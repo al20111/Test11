@@ -1,0 +1,108 @@
+{% extends 'base.html' %}
+{% block title %}メニュー{% endblock %}
+{% block h1 %}メニュー{% endblock %}
+{% block content %}
+{% if request.user.is_authenticated %}
+{% else %}
+<div class="if_guest">ログインまたは会員登録<i class="fa-solid fa-angles-up"></i></div>
+{% endif %}
+<div class="container">
+    <div class="upper_container">
+        {% if request.user.is_staff %}
+        <a href="{% url 'shift:confirm_author' %}" class="btn confirm_author">シフト閲覧
+            <p class="exp">各従業員から提出されたシフトを確認することができます。</p>
+        </a>
+        <a href="{% url 'shift:authorize' %}" class="btn authorize">シフト承認
+            <p class="exp">各従業員から提出されたシフトの承認をすることができます。</p>
+        </a>
+        {% else %}
+        <a href=" {% url 'shift:edit' %}" class="btn editing">シフト編集<i class="fa-solid fa-file"></i>
+            <p class="exp">シフトの編集を行うことができます。</p>
+        </a>
+        <a href="{% url 'shift:confirm' %}" class="btn confirm">シフト閲覧<i class="fa-solid fa-display"></i>
+            <p class="exp">承認されたシフトの閲覧を行うことができます。</p>
+        </a>
+        {% endif %}
+    </div>
+    <div class="lower_container">
+        <a href="{% url 'shift:send' %}" class="btn message_send">メッセージ送信<i class="fa-solid fa-message"></i>
+            <p class="exp">同じ店舗で働く従業員・雇用者へ<br>メッセージを送ることができます。</p>
+        </a>
+        <a href="{% url 'shift:OB' %}" class="btn board">掲示板・意見箱<i class="fa-solid fa-chalkboard-user"></i>
+            {% if request.user.is_staff %}
+            <p class="exp">掲示板の編集や、意見箱の確認を行うことができます。</p>
+            {% else %}
+            <p class="exp">店舗からの連絡の確認や、意見箱への投稿を行うことができます。</p>
+            {% endif %}
+        </a>
+    </div>
+</div>
+<style>
+    .if_guest {
+        position: absolute;
+        font-size: 30px;
+        margin-top: -11%;
+        margin-left: 10px;
+        color: red;
+        font-weight: bold;
+        border: 4px solid red;
+        width: 25%;
+        background-color: white;
+    }
+
+    .fa-angles-up {
+        margin-left: 20px;
+    }
+
+    .container {
+        justify-content: center;
+    }
+
+    .upper_container {
+        display: flex;
+        /* margin-top: 7%; */
+        justify-content: center;
+    }
+
+    .lower_container {
+        display: flex;
+        justify-content: center;
+    }
+
+    .btn {
+        background-color: #1F6FD8;
+        padding: 30px 20px;
+        margin: 10px 30px;
+        font-size: 30px;
+        color: white;
+        font-weight: bold;
+        opacity: 0.8;
+        border-radius: 20px;
+        width: 40%;
+        text-align: center;
+        box-shadow: 5px 5px 5px black;
+    }
+
+    .btn i {
+        margin-left: 20px;
+        color: white;
+        font-size: 40px;
+        z-index: 2;
+    }
+
+    .exp {
+        color: rgb(0, 0, 0);
+        font-size: 20px;
+        z-index: 2;
+        text-decoration: underline black;
+        text-decoration-thickness: 4px;
+        font-weight: normal;
+    }
+
+    .btn:hover {
+        opacity: 1.0;
+        box-shadow: none;
+        transform: translateY(5px);
+    }
+</style>
+{% endblock content %}

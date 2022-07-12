@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}シフト削除{% endblock %}
+{% block h1 %}シフト削除{% endblock %}
+{% block content %}
+
+<form action="{% url 'shift:delete_detail' %}" method="post">
+  {% csrf_token %}
+  <input type="date" name="date_field" required="required">
+  <input type="submit" value="Search">
+</form>
+
+<br>
+
+{% if shift_list %}
+  <table border="1">
+    {% for shift in shift_list %}
+    <tr>
+      <td>{{ shift.date }}</td>
+      <td>{{ shift.start_time }}</td>
+      <td>{{ shift.end_time }}</td>
+      <td>{{ shift.confirmed_flag }}</td>
+      <td>
+        <form method="post" action="{% url 'shift:deleteShift' shift.id %}">{% csrf_token %}
+          <button class="btn" type="submit" onclick='return confirm("本当に削除しますか？");'>削除</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+{% else %}
+{{ delete_text }}
+{% endif %}
+
+{% endblock content %}

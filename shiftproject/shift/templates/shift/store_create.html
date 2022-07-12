@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+{% block title %}店舗選択|シフト{% endblock %}
+{% block h1 %}店舗選択{% endblock %}
+{% block content %}
+<div class="container">
+    <p>新規登録した方は、勤務している店舗を選択してください。</p>
+    <p>ログイン済みの方は、<a href="{% url 'index' %}">メニュー画面</a>にお進みください。</p>
+    <form method='POST'>{% csrf_token %}
+        <div class="select-store">
+            {{form.as_p}}
+        </div>
+        <input type='submit' Value='確定'>
+    </form>
+</div>
+
+<style>
+    .select-store-title {
+        top: 20%;
+    }
+
+    .container {
+        border: 5px solid #ff9300;
+        width: 50%;
+        margin: 5% auto 20% auto;
+        border-radius: 10px;
+    }
+
+    .container a {
+        color: blue;
+    }
+
+    .container p {
+        text-align: center;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .select-store p {
+        font-size: 30px;
+    }
+
+    .select-store {
+        text-align: center;
+        /* font-size: 50px; */
+    }
+
+    select {
+        margin-top: 50px;
+        font-size: 30px;
+    }
+
+    input {
+        display: block;
+        width: 150px;
+        height: 70px;
+        font-size: 45px;
+        margin: 100px auto;
+        background: linear-gradient(135deg, #ffd900, #ff9300);
+        color: white;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: 0.3s;
+        border: 2px solid #ff9300;
+        background: #fff;
+        color: #ff9300;
+    }
+
+    input:hover {
+        background: #ff9300;
+        color: #fff;
+    }
+
+    input:active,
+    input:focus {
+        top: 2px;
+    }
+</style>
+{% endblock content %}
