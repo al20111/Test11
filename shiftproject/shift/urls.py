@@ -32,10 +32,11 @@ urlpatterns=[
     path('ShiftOthers/',views.shift_others,name='shift_others'),
     #給料計算
     path('ShiftMine/',views.shift_mine,name='shift_mine'),
-    
+    #シフト承認
     path('authorize/',views.authorize,name='authorize'),
     path('authorize_detail/', views.authorize_detail, name='authorize_detail'),
     path('authorizeShift/<int:id>', views.authorizeShift, name='authorizeShift'),
+    #シフト削除
     path('delete/',views.delete,name='delete'),
     path('delete_detail/', views.delete_detail, name='delete_detail'),
     path('deleteShift/<int:id>', views.deleteShift, name='deleteShift'),
