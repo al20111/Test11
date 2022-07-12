@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+
+{% block title %}掲示板{% endblock %}
+{% block content %}
+<div class="board">
+    <span class="title"><i class="fa-solid fa-circle-small"></i>掲示板</span>
+    <div class="board-detail">
+        {{object.text}}
+    </div>
+</div>
+
+<style>
+    i {
+        color: black;
+    }
+
+    .board {
+        display: block;
+        border: 20px solid rgb(248, 112, 0);
+        background-color: rgba(228, 144, 18, 0.4);
+        box-shadow: 8px 8px 1px black;
+        height: 500px;
+        width: 70%;
+        margin: 0 auto;
+        /* background-image: url(https://thumb.ac-illust.com/86/8648dc63957c50e6b02a842c65e7d677_t.jpeg); */
+        background-size: cover;
+
+    }
+
+    .board .title {
+        text-align: center;
+        position: absolute;
+        top: 25%;
+        left: 50%;
+        padding: 5px 25px;
+        background-color: #ee4719;
+        border-radius: 4px;
+        color: #fff;
+        font-size: 40px;
+        transform: translate(-50%, -50%);
+    }
+
+    .board .title ::before {
+        font-family: "Font Awesome 5 Free";
+        content: "\f111";
+        font-size: 30px;
+        color: #fff;
+        margin-right: 5px;
+    }
+
+
+    .board-detail {
+        padding-top: 200px;
+        text-align: center;
+        font-size: 40px;
+        font-family: "Meiryo";
+        text-decoration: underline;
+        font-weight: bold;
+    }
+</style>
+{% endblock content %}
