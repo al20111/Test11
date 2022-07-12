@@ -637,7 +637,12 @@ def shift_others(request):
 
 # シフト承認
 
-
+'''
+モジュール名: authorize
+作成者: 新井祐希
+日付: 2022.7.12
+機能要約: 日付入力画面を表示させる
+'''
 def authorize(request):
     """
     カレンダー画面
@@ -646,7 +651,12 @@ def authorize(request):
     template = loader.get_template('shift/authorize.html')
     return HttpResponse(template.render({}, request))
 
-
+'''
+モジュール名: authorize_detail
+作成者: 新井祐希
+日付: 2022.7.12
+機能要約: 未承認のシフトをデータベースから取得する
+'''
 def authorize_detail(request):
     template = loader.get_template('shift/authorize.html')
     d = request.POST['date_field']
@@ -675,19 +685,34 @@ def authorize_detail(request):
     }
     return HttpResponse(template.render(context, request))
 
-
+'''
+モジュール名: authorizeShift
+作成者: 新井祐希
+日付: 2022.7.12
+機能要約: シフトを承認済にする
+'''
 def authorizeShift(request, id):
     shift = ShiftData.objects.get(id=id)
     shift.confirmed_flag = 1
     shift.save()
     return HttpResponseRedirect(reverse('shift:authorize'))
 
-
+'''
+モジュール名: delet
+作成者: 新井祐希
+日付: 2022.7.12
+機能要約: 日付入力画面を表示させる
+'''
 def delete(request):
     template = loader.get_template('shift/delete.html')
     return HttpResponse(template.render({}, request))
 
-
+'''
+モジュール名: delete_detail
+作成者: 新井祐希
+日付: 2022.7.12
+機能要約: シフトをデータベースから取得する
+'''
 def delete_detail(request):
     template = loader.get_template('shift/delete.html')
     d = request.POST['date_field']
@@ -718,7 +743,12 @@ def delete_detail(request):
     }
     return HttpResponse(template.render(context, request))
 
-
+'''
+モジュール名: deleteShift
+作成者: 新井祐希
+日付: 2022.7.12
+機能要約: シフトを削除する
+'''
 def deleteShift(request, id):
     shift = ShiftData.objects.get(id=id)
     shift.delete()
